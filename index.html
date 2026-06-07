@@ -178,9 +178,15 @@
         position: relative;
         isolation: isolate;
         display: grid;
-        min-height: 100svh;
-        overflow: hidden;
+        min-height: 240vh;
         background: #111111;
+      }
+
+      .hero-sticky-media {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow: hidden;
       }
 
       .hero-video,
@@ -216,11 +222,14 @@
         flex-direction: column;
         justify-content: center;
         width: min(var(--page-width), calc(100% - var(--page-gutter)));
-        min-height: inherit;
-        margin: 0 auto;
+        min-height: 100vh;
+        margin: -100vh auto 0;
         padding: 86px 0 58px;
         color: #ffffff;
         text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 1;
         opacity: var(--hero-enter-progress);
         transform: translateY(calc((1 - var(--hero-enter-progress)) * 72px));
         visibility: hidden;
@@ -339,8 +348,9 @@
         height: 18px;
       }
 
-      .huggingface-icon {
-        flex: 0 0 auto;
+      .huggingface-mark {
+        font-size: 18px;
+        line-height: 1;
       }
 
       .hero-summary {
@@ -518,17 +528,18 @@
       </header>
 
       <section id="top" class="hero-section" aria-labelledby="project-title">
-        <video
-          class="hero-video"
-          src="webpage/hero/cycles_video.mp4"
-          autoplay
-          muted
-          loop
-          playsinline
-          preload="auto"
-          aria-hidden="true"
-        ></video>
-        <div class="hero-scrim" aria-hidden="true"></div>
+        <div class="hero-sticky-media" aria-hidden="true">
+          <video
+            class="hero-video"
+            src="webpage/hero/cycles_video.mp4"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+          ></video>
+          <div class="hero-scrim"></div>
+        </div>
 
         <div class="hero-content">
           <h1 id="project-title">
@@ -560,14 +571,7 @@
 
           <div class="hero-actions" aria-label="Project resources">
             <a class="hero-action" href="https://huggingface.co/spaces/rayli/instruct-particulate" target="_blank" rel="noreferrer">
-              <svg class="huggingface-icon" viewBox="0 0 32 32" aria-hidden="true">
-                <circle cx="16" cy="16" r="11.5" fill="#ffcc4d" />
-                <circle cx="11.8" cy="13.1" r="1.6" fill="#5c3b15" />
-                <circle cx="20.2" cy="13.1" r="1.6" fill="#5c3b15" />
-                <path d="M11.4 19.1c1.4 2 3.1 3 4.6 3s3.2-1 4.6-3" fill="none" stroke="#5c3b15" stroke-width="2" stroke-linecap="round" />
-                <path d="M6.1 20.1c-2.2.5-3.8-.5-4.3-2s.5-3 2.8-3.6" fill="none" stroke="#ffcc4d" stroke-width="3.2" stroke-linecap="round" />
-                <path d="M25.9 20.1c2.2.5 3.8-.5 4.3-2s-.5-3-2.8-3.6" fill="none" stroke="#ffcc4d" stroke-width="3.2" stroke-linecap="round" />
-              </svg>
+              <span class="huggingface-mark" aria-hidden="true">🤗</span>
               <span>Demo</span>
             </a>
           </div>
@@ -609,16 +613,40 @@
       const citationText = document.querySelector(".citation-bibtex code")?.textContent ?? "";
       let heroHasPlayedOnce = false;
       let lastHeroVideoTime = 0;
+      let heroProgressFrame = null;
 
       function markVideoReady() {
         hero?.classList.add("is-hero-video-ready");
       }
 
+      function setHeroProgress(progress) {
+        if (!hero) return;
+        const normalized = Math.min(Math.max(progress, 0), 1);
+        hero.style.setProperty("--hero-enter-progress", normalized.toFixed(4));
+        hero.classList.toggle("is-hero-content-visible", normalized > 0.02);
+      }
+
+      function updateHeroProgress() {
+        heroProgressFrame = null;
+        if (!hero) return;
+        const viewportHeight = window.innerHeight || 1;
+        const rect = hero.getBoundingClientRect();
+        const enterStart = viewportHeight * 0.08;
+        const enterDistance = viewportHeight * 0.82;
+        const scrollProgress = Math.min(Math.max((-rect.top - enterStart) / enterDistance, 0), 1);
+        setHeroProgress(heroHasPlayedOnce ? 1 : scrollProgress);
+      }
+
+      function requestHeroProgressUpdate() {
+        if (heroProgressFrame === null) {
+          heroProgressFrame = window.requestAnimationFrame(updateHeroProgress);
+        }
+      }
+
       function revealHeroContent() {
         if (heroHasPlayedOnce) return;
         heroHasPlayedOnce = true;
-        hero?.style.setProperty("--hero-enter-progress", "1.0000");
-        hero?.classList.add("is-hero-content-visible");
+        updateHeroProgress();
       }
 
       function handleHeroTimeUpdate(event) {
@@ -651,6 +679,10 @@
         }
         heroVideo.play().catch(() => {});
       }
+
+      updateHeroProgress();
+      window.addEventListener("scroll", requestHeroProgressUpdate, { passive: true });
+      window.addEventListener("resize", requestHeroProgressUpdate);
 
       copyButton?.addEventListener("click", async () => {
         try {
