@@ -280,6 +280,19 @@
         gap: 10px 28px;
       }
 
+      .hero-author {
+        color: inherit;
+        text-decoration: none;
+        text-underline-offset: 4px;
+        transition: color 0.16s ease;
+      }
+
+      .hero-author:hover,
+      .hero-author:focus-visible {
+        color: #ffffff;
+        text-decoration: underline;
+      }
+
       .hero-author sup,
       .hero-affiliations sup,
       .hero-equal-note sup {
@@ -428,6 +441,7 @@
         position: absolute;
         top: 12px;
         right: 12px;
+        z-index: 1;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -519,13 +533,8 @@
           line-height: 1.55;
         }
 
-        .citation-copy-button {
-          position: static;
-          margin-bottom: 10px;
-        }
-
         .citation-bibtex {
-          padding: 16px;
+          padding: 58px 16px 16px;
           font-size: 12px;
           line-height: 1.58;
         }
@@ -553,7 +562,7 @@
         <a href="#top" class="site-mark brand-smallcaps">Instruct-Particulate</a>
         <nav aria-label="Project sections">
           <a href="https://huggingface.co/spaces/rayli/instruct-particulate" target="_blank" rel="noreferrer">Demo</a>
-          <a href="#data">Data</a>
+          <a href="#data">Data Scaling</a>
           <a href="#citation">Citation</a>
         </nav>
       </header>
@@ -579,16 +588,16 @@
 
           <div class="hero-authors" aria-label="Authors">
             <div class="hero-author-row">
-              <span class="hero-author">Ruining Li<sup>1*</sup></span>
-              <span class="hero-author">Yuxin Yao<sup>2*</sup></span>
-              <span class="hero-author">Matt Zhou<sup>2</sup></span>
-              <span class="hero-author">Chuanxia Zheng<sup>3</sup></span>
+              <a class="hero-author" href="https://ruiningli.com/" target="_blank" rel="noreferrer">Ruining Li<sup>1*</sup></a>
+              <a class="hero-author" href="https://yuxinyao620.github.io/" target="_blank" rel="noreferrer">Yuxin Yao<sup>2*</sup></a>
+              <a class="hero-author" href="https://mattzh72.github.io/" target="_blank" rel="noreferrer">Matt Zhou<sup>2</sup></a>
+              <a class="hero-author" href="https://physicalvision.github.io/people/~chuanxia" target="_blank" rel="noreferrer">Chuanxia Zheng<sup>3</sup></a>
             </div>
             <div class="hero-author-row">
-              <span class="hero-author">Christian Rupprecht<sup>1</sup></span>
-              <span class="hero-author">Joan Lasenby<sup>2</sup></span>
-              <span class="hero-author">Shangzhe Wu<sup>2&dagger;</sup></span>
-              <span class="hero-author">Andrea Vedaldi<sup>1&dagger;</sup></span>
+              <a class="hero-author" href="https://chrirupp.github.io/" target="_blank" rel="noreferrer">Christian Rupprecht<sup>1</sup></a>
+              <a class="hero-author" href="https://www.eng.cam.ac.uk/profiles/jl221" target="_blank" rel="noreferrer">Joan Lasenby<sup>2</sup></a>
+              <a class="hero-author" href="https://www.elliottwu.com/" target="_blank" rel="noreferrer">Shangzhe Wu<sup>2&dagger;</sup></a>
+              <a class="hero-author" href="https://www.robots.ox.ac.uk/~vedaldi/" target="_blank" rel="noreferrer">Andrea Vedaldi<sup>1&dagger;</sup></a>
             </div>
           </div>
 
@@ -601,6 +610,16 @@
           <p class="hero-equal-note"><sup>*</sup> Equal contribution. <sup>&dagger;</sup> Equal advising.</p>
 
           <div class="hero-actions" aria-label="Project resources">
+            <a class="hero-action" href="https://arxiv.org/abs/2512.11798" target="_blank" rel="noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z" />
+                <path d="M14 2v5h5" />
+                <path d="M9 13h6" />
+                <path d="M9 17h6" />
+                <path d="M9 9h1" />
+              </svg>
+              <span>Technical Report</span>
+            </a>
             <a class="hero-action" href="https://huggingface.co/spaces/rayli/instruct-particulate" target="_blank" rel="noreferrer">
               <span class="huggingface-mark" aria-hidden="true">🤗</span>
               <span>Demo</span>
@@ -615,7 +634,7 @@
 
       <section id="data" class="content-section data-section">
         <div class="section-heading">
-          <h2>Data</h2>
+          <h2>Data Scaling</h2>
         </div>
 
         <video
