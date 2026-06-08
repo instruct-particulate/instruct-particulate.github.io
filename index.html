@@ -687,10 +687,13 @@
             <span class="brand-smallcaps">Instruct-Particulate</span> is a new model in the <a
               href="https://ruiningli.com/particulate" target="_blank" rel="noreferrer">Particulate</a> series, with
             much stronger generalization to novel categories and promptability.
-            It is a feed-forward model that, given a single static 3D mesh and a target kinematic specification
-            (including part descriptions, connectivity, joint types, and optional point prompts), directly infers the
+            It is a feed-forward model that, given a single static 3D mesh (including outputs from off-the-shelf 3D
+            generators) and a target kinematic specification
+            (i.e., part descriptions, connectivity, joint types, and optional point prompts), directly infers the
             underlying articulated structure, including the corresponding kinematic part segmentation and joint motion
             parameters.
+            This allows for generating diverse, realistic, <strong>simulator-compatible</strong> articulated 3D objects
+            directly from real-world images.
           </p>
         </div>
       </div>
