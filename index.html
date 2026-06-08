@@ -39,6 +39,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700&display=swap"
     />
+    <link rel="stylesheet" href="webpage/image_conditioned/gallery.css" />
     <script type="module" src="https://unpkg.com/@google/model-viewer@4.3.1/dist/model-viewer.min.js"></script>
 
     <title>Instruct-Particulate</title>
@@ -405,121 +406,6 @@
         text-wrap: pretty;
       }
 
-      .generation-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 18px;
-      }
-
-      .generation-card {
-        position: relative;
-        min-height: 320px;
-        aspect-ratio: 1 / 1.08;
-        overflow: hidden;
-        background:
-          radial-gradient(circle at 72% 18%, rgba(12, 140, 233, 0.12), transparent 32%),
-          linear-gradient(180deg, #ffffff 0%, #eef1f4 100%);
-        border: 1px solid var(--border-default);
-        border-radius: 8px;
-        box-shadow: 0 18px 45px rgba(17, 17, 17, 0.08);
-      }
-
-      .generation-viewer {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        --poster-color: transparent;
-      }
-
-      .generation-viewer::part(default-progress-bar) {
-        height: 2px;
-        background-color: var(--accent);
-      }
-
-      .generation-input {
-        position: absolute;
-        z-index: 2;
-        top: 12px;
-        left: 12px;
-        width: clamp(82px, 28%, 118px);
-        aspect-ratio: 1;
-        overflow: hidden;
-        background: #ffffff;
-        border: 2px solid rgba(255, 255, 255, 0.94);
-        border-radius: 8px;
-        box-shadow: 0 10px 24px rgba(17, 17, 17, 0.2);
-      }
-
-      .generation-input img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-
-      .generation-input span {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        padding: 18px 6px 5px;
-        color: #ffffff;
-        background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.72) 100%);
-        font-size: 10px;
-        font-weight: 700;
-        line-height: 1;
-        text-align: center;
-        text-transform: uppercase;
-      }
-
-      .generation-texture-button {
-        position: absolute;
-        z-index: 3;
-        right: 12px;
-        bottom: 12px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 7px;
-        min-height: 38px;
-        max-width: calc(100% - 24px);
-        padding: 0 13px;
-        color: #ffffff;
-        background: rgba(17, 17, 17, 0.86);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 8px;
-        font-size: 12px;
-        font-weight: 700;
-        line-height: 1;
-        cursor: pointer;
-        box-shadow: 0 10px 24px rgba(17, 17, 17, 0.18);
-        backdrop-filter: blur(12px);
-        transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
-      }
-
-      .generation-texture-button:hover,
-      .generation-texture-button:focus-visible {
-        background: rgba(0, 86, 200, 0.94);
-        border-color: rgba(255, 255, 255, 0.42);
-        transform: translateY(-1px);
-      }
-
-      .generation-texture-button:disabled {
-        cursor: default;
-        transform: none;
-      }
-
-      .generation-texture-button.is-textured {
-        background: rgba(16, 115, 73, 0.92);
-      }
-
-      .generation-texture-button svg {
-        flex: 0 0 auto;
-        width: 15px;
-        height: 15px;
-      }
-
       .data-video {
         display: block;
         width: 100%;
@@ -647,15 +533,6 @@
           margin-top: 20px;
           font-size: 15px;
           line-height: 1.55;
-        }
-
-        .generation-grid {
-          grid-template-columns: 1fr;
-          gap: 14px;
-        }
-
-        .generation-card {
-          min-height: 300px;
         }
 
         .citation-bibtex {
@@ -786,133 +663,11 @@
           <h2>Image-Conditioned Generation of Articulated 3D Assets</h2>
         </div>
 
-        <div class="generation-grid" aria-label="Image-conditioned articulated 3D asset results">
-          <article class="generation-card">
-            <model-viewer class="generation-viewer" src="webpage/image_conditioned/microwave_parts_axes.glb" alt="Generated articulated 3D microwave result 1" camera-controls auto-rotate autoplay interaction-prompt="none" loading="lazy" shadow-intensity="0.65" exposure="1"></model-viewer>
-            <div class="generation-input">
-              <img src="webpage/image_conditioned/microwave_input.png" alt="Microwave conditioning input" loading="lazy" decoding="async" />
-              <span>Input</span>
-            </div>
-            <button type="button" class="generation-texture-button" data-parts-src="webpage/image_conditioned/microwave_parts_axes.glb" data-textured-src="webpage/image_conditioned/microwave_textured.glb" aria-label="Show textured animation for generated asset 1">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M12 22a7 7 0 0 0 7-7c0-2.8-1.5-4.7-3-6.7-1.2-1.6-2.4-3.1-3-5.3-3.9 3-8 6.5-8 12a7 7 0 0 0 7 7z" />
-                <path d="M12 22a4 4 0 0 0 4-4c0-1.8-1.1-3-2.1-4.2-.8-.9-1.5-1.9-1.9-3.3-2.2 1.8-4 3.7-4 6.5a4 4 0 0 0 4 4z" />
-              </svg>
-              <span data-texture-label>Show textured animation</span>
-            </button>
-          </article>
-          <article class="generation-card">
-            <model-viewer class="generation-viewer" src="webpage/image_conditioned/microwave_parts_axes.glb" alt="Generated articulated 3D microwave result 2" camera-controls auto-rotate autoplay interaction-prompt="none" loading="lazy" shadow-intensity="0.65" exposure="1"></model-viewer>
-            <div class="generation-input">
-              <img src="webpage/image_conditioned/microwave_input.png" alt="Microwave conditioning input" loading="lazy" decoding="async" />
-              <span>Input</span>
-            </div>
-            <button type="button" class="generation-texture-button" data-parts-src="webpage/image_conditioned/microwave_parts_axes.glb" data-textured-src="webpage/image_conditioned/microwave_textured.glb" aria-label="Show textured animation for generated asset 2">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M12 22a7 7 0 0 0 7-7c0-2.8-1.5-4.7-3-6.7-1.2-1.6-2.4-3.1-3-5.3-3.9 3-8 6.5-8 12a7 7 0 0 0 7 7z" />
-                <path d="M12 22a4 4 0 0 0 4-4c0-1.8-1.1-3-2.1-4.2-.8-.9-1.5-1.9-1.9-3.3-2.2 1.8-4 3.7-4 6.5a4 4 0 0 0 4 4z" />
-              </svg>
-              <span data-texture-label>Show textured animation</span>
-            </button>
-          </article>
-          <article class="generation-card">
-            <model-viewer class="generation-viewer" src="webpage/image_conditioned/microwave_parts_axes.glb" alt="Generated articulated 3D microwave result 3" camera-controls auto-rotate autoplay interaction-prompt="none" loading="lazy" shadow-intensity="0.65" exposure="1"></model-viewer>
-            <div class="generation-input">
-              <img src="webpage/image_conditioned/microwave_input.png" alt="Microwave conditioning input" loading="lazy" decoding="async" />
-              <span>Input</span>
-            </div>
-            <button type="button" class="generation-texture-button" data-parts-src="webpage/image_conditioned/microwave_parts_axes.glb" data-textured-src="webpage/image_conditioned/microwave_textured.glb" aria-label="Show textured animation for generated asset 3">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M12 22a7 7 0 0 0 7-7c0-2.8-1.5-4.7-3-6.7-1.2-1.6-2.4-3.1-3-5.3-3.9 3-8 6.5-8 12a7 7 0 0 0 7 7z" />
-                <path d="M12 22a4 4 0 0 0 4-4c0-1.8-1.1-3-2.1-4.2-.8-.9-1.5-1.9-1.9-3.3-2.2 1.8-4 3.7-4 6.5a4 4 0 0 0 4 4z" />
-              </svg>
-              <span data-texture-label>Show textured animation</span>
-            </button>
-          </article>
-          <article class="generation-card">
-            <model-viewer class="generation-viewer" src="webpage/image_conditioned/microwave_parts_axes.glb" alt="Generated articulated 3D microwave result 4" camera-controls auto-rotate autoplay interaction-prompt="none" loading="lazy" shadow-intensity="0.65" exposure="1"></model-viewer>
-            <div class="generation-input">
-              <img src="webpage/image_conditioned/microwave_input.png" alt="Microwave conditioning input" loading="lazy" decoding="async" />
-              <span>Input</span>
-            </div>
-            <button type="button" class="generation-texture-button" data-parts-src="webpage/image_conditioned/microwave_parts_axes.glb" data-textured-src="webpage/image_conditioned/microwave_textured.glb" aria-label="Show textured animation for generated asset 4">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M12 22a7 7 0 0 0 7-7c0-2.8-1.5-4.7-3-6.7-1.2-1.6-2.4-3.1-3-5.3-3.9 3-8 6.5-8 12a7 7 0 0 0 7 7z" />
-                <path d="M12 22a4 4 0 0 0 4-4c0-1.8-1.1-3-2.1-4.2-.8-.9-1.5-1.9-1.9-3.3-2.2 1.8-4 3.7-4 6.5a4 4 0 0 0 4 4z" />
-              </svg>
-              <span data-texture-label>Show textured animation</span>
-            </button>
-          </article>
-          <article class="generation-card">
-            <model-viewer class="generation-viewer" src="webpage/image_conditioned/microwave_parts_axes.glb" alt="Generated articulated 3D microwave result 5" camera-controls auto-rotate autoplay interaction-prompt="none" loading="lazy" shadow-intensity="0.65" exposure="1"></model-viewer>
-            <div class="generation-input">
-              <img src="webpage/image_conditioned/microwave_input.png" alt="Microwave conditioning input" loading="lazy" decoding="async" />
-              <span>Input</span>
-            </div>
-            <button type="button" class="generation-texture-button" data-parts-src="webpage/image_conditioned/microwave_parts_axes.glb" data-textured-src="webpage/image_conditioned/microwave_textured.glb" aria-label="Show textured animation for generated asset 5">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M12 22a7 7 0 0 0 7-7c0-2.8-1.5-4.7-3-6.7-1.2-1.6-2.4-3.1-3-5.3-3.9 3-8 6.5-8 12a7 7 0 0 0 7 7z" />
-                <path d="M12 22a4 4 0 0 0 4-4c0-1.8-1.1-3-2.1-4.2-.8-.9-1.5-1.9-1.9-3.3-2.2 1.8-4 3.7-4 6.5a4 4 0 0 0 4 4z" />
-              </svg>
-              <span data-texture-label>Show textured animation</span>
-            </button>
-          </article>
-          <article class="generation-card">
-            <model-viewer class="generation-viewer" src="webpage/image_conditioned/microwave_parts_axes.glb" alt="Generated articulated 3D microwave result 6" camera-controls auto-rotate autoplay interaction-prompt="none" loading="lazy" shadow-intensity="0.65" exposure="1"></model-viewer>
-            <div class="generation-input">
-              <img src="webpage/image_conditioned/microwave_input.png" alt="Microwave conditioning input" loading="lazy" decoding="async" />
-              <span>Input</span>
-            </div>
-            <button type="button" class="generation-texture-button" data-parts-src="webpage/image_conditioned/microwave_parts_axes.glb" data-textured-src="webpage/image_conditioned/microwave_textured.glb" aria-label="Show textured animation for generated asset 6">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M12 22a7 7 0 0 0 7-7c0-2.8-1.5-4.7-3-6.7-1.2-1.6-2.4-3.1-3-5.3-3.9 3-8 6.5-8 12a7 7 0 0 0 7 7z" />
-                <path d="M12 22a4 4 0 0 0 4-4c0-1.8-1.1-3-2.1-4.2-.8-.9-1.5-1.9-1.9-3.3-2.2 1.8-4 3.7-4 6.5a4 4 0 0 0 4 4z" />
-              </svg>
-              <span data-texture-label>Show textured animation</span>
-            </button>
-          </article>
-          <article class="generation-card">
-            <model-viewer class="generation-viewer" src="webpage/image_conditioned/microwave_parts_axes.glb" alt="Generated articulated 3D microwave result 7" camera-controls auto-rotate autoplay interaction-prompt="none" loading="lazy" shadow-intensity="0.65" exposure="1"></model-viewer>
-            <div class="generation-input">
-              <img src="webpage/image_conditioned/microwave_input.png" alt="Microwave conditioning input" loading="lazy" decoding="async" />
-              <span>Input</span>
-            </div>
-            <button type="button" class="generation-texture-button" data-parts-src="webpage/image_conditioned/microwave_parts_axes.glb" data-textured-src="webpage/image_conditioned/microwave_textured.glb" aria-label="Show textured animation for generated asset 7">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M12 22a7 7 0 0 0 7-7c0-2.8-1.5-4.7-3-6.7-1.2-1.6-2.4-3.1-3-5.3-3.9 3-8 6.5-8 12a7 7 0 0 0 7 7z" />
-                <path d="M12 22a4 4 0 0 0 4-4c0-1.8-1.1-3-2.1-4.2-.8-.9-1.5-1.9-1.9-3.3-2.2 1.8-4 3.7-4 6.5a4 4 0 0 0 4 4z" />
-              </svg>
-              <span data-texture-label>Show textured animation</span>
-            </button>
-          </article>
-          <article class="generation-card">
-            <model-viewer class="generation-viewer" src="webpage/image_conditioned/microwave_parts_axes.glb" alt="Generated articulated 3D microwave result 8" camera-controls auto-rotate autoplay interaction-prompt="none" loading="lazy" shadow-intensity="0.65" exposure="1"></model-viewer>
-            <div class="generation-input">
-              <img src="webpage/image_conditioned/microwave_input.png" alt="Microwave conditioning input" loading="lazy" decoding="async" />
-              <span>Input</span>
-            </div>
-            <button type="button" class="generation-texture-button" data-parts-src="webpage/image_conditioned/microwave_parts_axes.glb" data-textured-src="webpage/image_conditioned/microwave_textured.glb" aria-label="Show textured animation for generated asset 8">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M12 22a7 7 0 0 0 7-7c0-2.8-1.5-4.7-3-6.7-1.2-1.6-2.4-3.1-3-5.3-3.9 3-8 6.5-8 12a7 7 0 0 0 7 7z" />
-                <path d="M12 22a4 4 0 0 0 4-4c0-1.8-1.1-3-2.1-4.2-.8-.9-1.5-1.9-1.9-3.3-2.2 1.8-4 3.7-4 6.5a4 4 0 0 0 4 4z" />
-              </svg>
-              <span data-texture-label>Show textured animation</span>
-            </button>
-          </article>
-          <article class="generation-card">
-            <model-viewer class="generation-viewer" src="webpage/image_conditioned/microwave_parts_axes.glb" alt="Generated articulated 3D microwave result 9" camera-controls auto-rotate autoplay interaction-prompt="none" loading="lazy" shadow-intensity="0.65" exposure="1"></model-viewer>
-            <div class="generation-input">
-              <img src="webpage/image_conditioned/microwave_input.png" alt="Microwave conditioning input" loading="lazy" decoding="async" />
-              <span>Input</span>
-            </div>
-            <button type="button" class="generation-texture-button" data-parts-src="webpage/image_conditioned/microwave_parts_axes.glb" data-textured-src="webpage/image_conditioned/microwave_textured.glb" aria-label="Show textured animation for generated asset 9">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M12 22a7 7 0 0 0 7-7c0-2.8-1.5-4.7-3-6.7-1.2-1.6-2.4-3.1-3-5.3-3.9 3-8 6.5-8 12a7 7 0 0 0 7 7z" />
-                <path d="M12 22a4 4 0 0 0 4-4c0-1.8-1.1-3-2.1-4.2-.8-.9-1.5-1.9-1.9-3.3-2.2 1.8-4 3.7-4 6.5a4 4 0 0 0 4 4z" />
-              </svg>
-              <span data-texture-label>Show textured animation</span>
-            </button>
-          </article>
+        <div class="generation-grid" data-generation-grid data-limit="9" aria-label="Image-conditioned articulated 3D asset results">
+        </div>
+
+        <div class="generation-more-wrap" data-generation-more hidden>
+          <a class="generation-more-link" href="gallery/">View Full Gallery</a>
         </div>
       </section>
 
@@ -945,7 +700,6 @@
       const copyButton = document.querySelector("[data-copy-citation]");
       const copyLabel = document.querySelector("[data-copy-label]");
       const citationText = document.querySelector(".citation-bibtex code")?.textContent ?? "";
-      const textureButtons = document.querySelectorAll("[data-textured-src]");
       let heroHasPlayedOnce = false;
       let lastHeroVideoTime = 0;
       let heroProgressFrame = null;
@@ -1019,54 +773,6 @@
       window.addEventListener("scroll", requestHeroProgressUpdate, { passive: true });
       window.addEventListener("resize", requestHeroProgressUpdate);
 
-      textureButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          const card = button.closest(".generation-card");
-          const viewer = card?.querySelector("model-viewer");
-          const partsSrc = button.dataset.partsSrc;
-          const texturedSrc = button.dataset.texturedSrc;
-          const label = button.querySelector("[data-texture-label]");
-          if (!viewer || !partsSrc || !texturedSrc) return;
-
-          const isShowingTextured = viewer.getAttribute("src") === texturedSrc;
-          const nextSrc = isShowingTextured ? partsSrc : texturedSrc;
-          if (viewer.getAttribute("src") === nextSrc) return;
-
-          const assetMatch = button.getAttribute("aria-label")?.match(/asset \d+/);
-          const assetSuffix = assetMatch ? ` for generated ${assetMatch[0]}` : "";
-          button.disabled = true;
-          if (label) label.textContent = isShowingTextured ? "Loading parts & axes" : "Loading textured animation";
-
-          const cleanup = () => {
-            viewer.removeEventListener("load", handleLoad);
-            viewer.removeEventListener("error", handleError);
-          };
-
-          const handleLoad = () => {
-            if (viewer.getAttribute("src") !== nextSrc) return;
-            cleanup();
-            const nowShowingTextured = nextSrc === texturedSrc;
-            button.disabled = false;
-            button.classList.toggle("is-textured", nowShowingTextured);
-            if (label) label.textContent = nowShowingTextured ? "Show parts & axes" : "Show textured animation";
-            button.setAttribute(
-              "aria-label",
-              `${nowShowingTextured ? "Show parts & axes" : "Show textured animation"}${assetSuffix}`,
-            );
-          };
-
-          const handleError = () => {
-            cleanup();
-            button.disabled = false;
-            if (label) label.textContent = isShowingTextured ? "Show parts & axes" : "Show textured animation";
-          };
-
-          viewer.addEventListener("load", handleLoad, { once: true });
-          viewer.addEventListener("error", handleError, { once: true });
-          viewer.setAttribute("src", nextSrc);
-        });
-      });
-
       copyButton?.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(citationText);
@@ -1078,6 +784,23 @@
           if (copyLabel) copyLabel.textContent = "Select";
         }
       });
+    </script>
+    <script type="module">
+      import { generationItems, renderGenerationGrid } from "./webpage/image_conditioned/gallery.js";
+
+      const generationGrid = document.querySelector("[data-generation-grid]");
+      const moreWrap = document.querySelector("[data-generation-more]");
+
+      if (generationGrid) {
+        const requestedLimit = Number.parseInt(generationGrid.dataset.limit ?? "", 10);
+        const visibleCount = renderGenerationGrid(generationGrid, generationItems, {
+          limit: Number.isFinite(requestedLimit) ? requestedLimit : generationItems.length,
+        });
+
+        if (moreWrap && generationItems.length > visibleCount) {
+          moreWrap.hidden = false;
+        }
+      }
     </script>
   </body>
 </html>
