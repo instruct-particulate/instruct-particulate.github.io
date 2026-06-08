@@ -356,11 +356,43 @@
     }
 
     .hero-summary {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
       max-width: 820px;
       margin: 22px auto 0;
-      color: rgba(255, 255, 255, 0.84);
       text-align: left;
-      font-size: 17px;
+    }
+
+    .hero-summary-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      margin-top: 3px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      color: #9ec4ff;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(158, 196, 255, 0.34);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      line-height: 1;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .hero-summary-badge svg {
+      display: block;
+      width: 14px;
+      height: 14px;
+    }
+
+    .hero-summary-text {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.84);
+      font-size: 20px;
       line-height: 1.5;
       text-wrap: pretty;
     }
@@ -643,10 +675,24 @@
           </a>
         </div>
 
-        <p class="hero-summary">
-          <span class="brand-smallcaps">Instruct-Particulate</span> is a new model in the <a
-            href="https://ruiningli.com/particulate" target="_blank" rel="noreferrer">Particulate</a> series.
-        </p>
+        <div class="hero-summary">
+          <span class="hero-summary-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg>
+            <span>TL;DR</span>
+          </span>
+          <p class="hero-summary-text">
+            <span class="brand-smallcaps">Instruct-Particulate</span> is a new model in the <a
+              href="https://ruiningli.com/particulate" target="_blank" rel="noreferrer">Particulate</a> series, with
+            much stronger generalization to novel categories and promptability.
+            It is a feed-forward model that, given a single static 3D mesh and a target kinematic specification
+            (including part descriptions, connectivity, joint types, and optional point prompts), directly infers the
+            underlying articulated structure, including the corresponding kinematic part segmentation and joint motion
+            parameters.
+          </p>
+        </div>
       </div>
     </section>
 
