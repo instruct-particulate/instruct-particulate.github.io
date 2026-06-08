@@ -67,7 +67,7 @@ function createResultCard(item) {
   viewer.setAttribute("loading", "lazy");
   viewer.setAttribute("shadow-intensity", "0.65");
   viewer.setAttribute("exposure", "1");
-  viewer.setAttribute("orientation", "-90deg 0deg 0deg");
+  viewer.setAttribute("orientation", "0deg -90deg 0deg");
 
   const input = document.createElement("div");
   input.className = "generation-input";
