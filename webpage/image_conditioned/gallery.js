@@ -1,3 +1,5 @@
+const resultBase = "/webpage/image_conditioned/results";
+
 const microwaveDemoAsset = {
   inputSrc: "/webpage/image_conditioned/microwave_input.png",
   partsSrc: "/webpage/image_conditioned/microwave_parts_axes.glb",
@@ -5,19 +7,31 @@ const microwaveDemoAsset = {
   inputAlt: "Microwave conditioning input",
 };
 
+function resultAsset(id, title, options = {}) {
+  const base = `${resultBase}/${id}`;
+  return {
+    id,
+    title,
+    inputSrc: options.inputSrc ?? `${base}/input.png`,
+    partsSrc: `${base}/mesh_parts_with_axes.glb`,
+    texturedSrc: `${base}/animated_textured.glb`,
+    inputAlt: options.inputAlt ?? `${title} conditioning input`,
+  };
+}
+
 // Add, remove, or reorder result objects here; both the homepage and /gallery/ read this list.
 export const generationItems = [
-  { id: "microwave-01", title: "Microwave Result 01", ...microwaveDemoAsset },
-  { id: "microwave-02", title: "Microwave Result 02", ...microwaveDemoAsset },
-  { id: "microwave-03", title: "Microwave Result 03", ...microwaveDemoAsset },
-  { id: "microwave-04", title: "Microwave Result 04", ...microwaveDemoAsset },
-  { id: "microwave-05", title: "Microwave Result 05", ...microwaveDemoAsset },
-  { id: "microwave-06", title: "Microwave Result 06", ...microwaveDemoAsset },
-  { id: "microwave-07", title: "Microwave Result 07", ...microwaveDemoAsset },
-  { id: "microwave-08", title: "Microwave Result 08", ...microwaveDemoAsset },
-  { id: "microwave-09", title: "Microwave Result 09", ...microwaveDemoAsset },
-  { id: "microwave-10", title: "Microwave Result 10", ...microwaveDemoAsset },
-  { id: "microwave-11", title: "Microwave Result 11", ...microwaveDemoAsset },
+  resultAsset("assets-802c1ccad00e90567182698145546d2f", "Image-Conditioned Result 01", microwaveDemoAsset),
+  resultAsset("assets-54ca4892caaa2413d290c99dca417006", "Image-Conditioned Result 02", microwaveDemoAsset),
+  resultAsset("articulated-models-2-007", "Image-Conditioned Result 03"),
+  resultAsset("articulated-models-5-019", "Image-Conditioned Result 04"),
+  resultAsset("articulated-models-5-011", "Image-Conditioned Result 05"),
+  resultAsset("articulated-models-5-005", "Image-Conditioned Result 06"),
+  resultAsset("articulated-models-5-002", "Image-Conditioned Result 07"),
+  resultAsset("articulated-models-3-000", "Image-Conditioned Result 08"),
+  resultAsset("articulated-models-5-010", "Image-Conditioned Result 09"),
+  resultAsset("articulated-models-5-004", "Image-Conditioned Result 10"),
+  resultAsset("articulated-model-046", "Image-Conditioned Result 11"),
   { id: "microwave-12", title: "Microwave Result 12", ...microwaveDemoAsset },
   { id: "microwave-13", title: "Microwave Result 13", ...microwaveDemoAsset },
   { id: "microwave-14", title: "Microwave Result 14", ...microwaveDemoAsset },
