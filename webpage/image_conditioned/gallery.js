@@ -78,9 +78,15 @@ function createGenerationViewer(src, alt, { eager = false } = {}) {
 // createGenerationViewer) instead of auto-fitting to its own bounding box, so
 // both models render at the *same* scale — the textured model inherits the
 // parts-&-axes model's normalization factor rather than being re-normalized to
-// its own (axis-free, hence tighter) bounds. The current orbit angles are
-// always copied so the slowly auto-rotating models stay aligned across a
-// switch.
+// its own (axis-free, hence tighter) bounds.
+//
+// Rotation alignment is the other half: `auto-rotate` spins the *scene yaw*
+// (`turntableRotation`), which is independent of the camera orbit and keeps
+// advancing on the visible viewer while the hidden one is frozen. We therefore
+// copy both the orbit angles (covers manual drags) and the turntable rotation
+// (covers auto-rotate) so the model never jumps orientation on a switch — e.g.
+// when the parts model has already auto-rotated before the textured model is
+// first revealed.
 //
 // The framing is written via `setAttribute` (declarative, authoritative) so it
 // survives model-viewer's own auto-framing pass, and must be applied only once
@@ -107,6 +113,13 @@ function syncViewerCamera(source, target, { copyFraming }) {
   } else {
     // Keep the target's own framing (auto radius/target); align rotation only.
     target.setAttribute("camera-orbit", `${orbit.theta}rad ${orbit.phi}rad auto`);
+  }
+  // Match the auto-rotate turntable angle (radians). resetTurntableRotation sets
+  // the scene yaw; auto-rotate then keeps accumulating from there.
+  const yaw = source.turntableRotation;
+  if (typeof yaw === "number" && Number.isFinite(yaw) &&
+      typeof target.resetTurntableRotation === "function") {
+    target.resetTurntableRotation(yaw);
   }
   if (typeof target.jumpCameraToGoal === "function") target.jumpCameraToGoal();
 }
