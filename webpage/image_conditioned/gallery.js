@@ -53,27 +53,44 @@ const textureIcon = `
 
 const normalizedModelExtent = 2;
 
+function createGenerationViewer(src, alt, { eager = false } = {}) {
+  const viewer = document.createElement("model-viewer");
+  viewer.className = "generation-viewer";
+  viewer.setAttribute("src", src);
+  viewer.setAttribute("alt", alt);
+  viewer.setAttribute("camera-controls", "");
+  viewer.setAttribute("auto-rotate", "");
+  viewer.setAttribute("autoplay", "");
+  viewer.setAttribute("interaction-prompt", "none");
+  viewer.setAttribute("loading", eager ? "eager" : "lazy");
+  viewer.setAttribute("shadow-intensity", "0.65");
+  viewer.setAttribute("exposure", "1");
+  viewer.setAttribute("orientation", "0deg -90deg 0deg");
+  return viewer;
+}
+
+// Each card keeps two stacked viewers (parts + textured) and toggles which is
+// visible. Swapping a single viewer's `src` back and forth triggers a
+// model-viewer cache bug where re-requesting a previously-shown URL reuses a
+// disposed cache entry and fires `error` instead of `load`, leaving the toggle
+// stuck on "Loading…". Loading each model once and toggling visibility avoids
+// that entirely and makes switching instant after the first load.
 function createResultCard(item) {
   const card = document.createElement("article");
   card.className = "generation-card";
   card.dataset.resultId = item.id;
 
-  const viewer = document.createElement("model-viewer");
-  viewer.className = "generation-viewer";
-  viewer.setAttribute("src", item.partsSrc);
-  viewer.setAttribute("alt", `Generated articulated 3D asset for ${item.title}`);
-  viewer.setAttribute("camera-controls", "");
-  viewer.setAttribute("auto-rotate", "");
-  viewer.setAttribute("autoplay", "");
-  viewer.setAttribute("interaction-prompt", "none");
-  viewer.setAttribute("loading", "lazy");
-  viewer.setAttribute("shadow-intensity", "0.65");
-  viewer.setAttribute("exposure", "1");
-  viewer.setAttribute("orientation", "0deg -90deg 0deg");
-
   const normalization = {
     scaleAttribute: null,
   };
+
+  const partsViewer = createGenerationViewer(
+    item.partsSrc,
+    `Generated articulated 3D asset for ${item.title}`,
+  );
+
+  let texturedViewer = null;
+  let showingTextured = false;
 
   const input = document.createElement("div");
   input.className = "generation-input";
@@ -86,30 +103,113 @@ function createResultCard(item) {
   button.type = "button";
   button.className = "generation-texture-button";
   button.disabled = true;
-  button.dataset.partsSrc = item.partsSrc;
-  button.dataset.texturedSrc = item.texturedSrc;
   button.setAttribute("aria-label", `Show textured animation for ${item.title}`);
   button.innerHTML = `${textureIcon}<span data-texture-label>Show textured animation</span>`;
-  button.addEventListener("click", () => toggleTexture(viewer, button, item.title, normalization));
 
-  viewer.addEventListener("load", () => {
-    if (viewer.getAttribute("src") !== item.partsSrc) return;
+  const setButtonLabel = (textured, { loading = false } = {}) => {
+    const label = button.querySelector("[data-texture-label]");
+    if (label) {
+      label.textContent = loading
+        ? (textured ? "Loading textured animation" : "Loading parts & axes")
+        : (textured ? "Show parts & axes" : "Show textured animation");
+    }
+    if (!loading) {
+      button.classList.toggle("is-textured", textured);
+      button.setAttribute(
+        "aria-label",
+        `${textured ? "Show parts & axes" : "Show textured animation"} for ${item.title}`,
+      );
+    }
+  };
+
+  // `model-viewer` sets `:host { display: block }` in its shadow DOM, which
+  // overrides the UA `[hidden] { display: none }` rule. Toggle visibility with
+  // an inline `display` style instead, since inline styles win over `:host`.
+  const setViewerVisible = (viewer, visible) => {
+    if (viewer) viewer.style.display = visible ? "" : "none";
+  };
+
+  const ensureTexturedViewer = () => {
+    if (texturedViewer) return texturedViewer;
+    // Use eager loading so the model fetches even while hidden (display:none
+    // elements never intersect the viewport, so lazy loading would never fire).
+    texturedViewer = createGenerationViewer(
+      item.texturedSrc,
+      `Textured animation for ${item.title}`,
+      { eager: true },
+    );
+    setViewerVisible(texturedViewer, false);
+    applyNormalizationScale(texturedViewer, normalization);
+    card.insertBefore(texturedViewer, input);
+    return texturedViewer;
+  };
+
+  const showParts = () => {
+    showingTextured = false;
+    setViewerVisible(texturedViewer, false);
+    setViewerVisible(partsViewer, true);
+    button.disabled = false;
+    setButtonLabel(false);
+  };
+
+  const showTextured = () => {
+    showingTextured = true;
+    setViewerVisible(partsViewer, false);
+    setViewerVisible(texturedViewer, true);
+    button.disabled = false;
+    setButtonLabel(true);
+  };
+
+  button.addEventListener("click", () => {
+    if (!normalization.scaleAttribute) return;
+    if (showingTextured) {
+      showParts();
+      return;
+    }
+
+    const viewer = ensureTexturedViewer();
+    if (viewer.loaded) {
+      showTextured();
+      return;
+    }
+
+    button.disabled = true;
+    setButtonLabel(true, { loading: true });
+
+    const cleanup = () => {
+      viewer.removeEventListener("load", onLoad);
+      viewer.removeEventListener("error", onError);
+    };
+    const onLoad = () => {
+      cleanup();
+      showTextured();
+    };
+    const onError = () => {
+      cleanup();
+      button.disabled = false;
+      setButtonLabel(false);
+    };
+    viewer.addEventListener("load", onLoad, { once: true });
+    viewer.addEventListener("error", onError, { once: true });
+  });
+
+  partsViewer.addEventListener("load", () => {
     if (!normalization.scaleAttribute) {
-      normalization.scaleAttribute = getNormalizationScale(viewer);
-      applyNormalizationScale(viewer, normalization);
+      normalization.scaleAttribute = getNormalizationScale(getModelDimensions(partsViewer));
+      if (texturedViewer) applyNormalizationScale(texturedViewer, normalization);
     }
     button.disabled = false;
   });
 
-  viewer.addEventListener("error", () => {
-    if (viewer.getAttribute("src") === item.partsSrc) button.disabled = false;
+  partsViewer.addEventListener("error", () => {
+    button.disabled = false;
   });
 
-  card.append(viewer, input, button);
+  card.append(partsViewer, input, button);
   return card;
 }
 
-function getNormalizationScale(viewer) {
+function getModelDimensions(viewer) {
   if (typeof viewer.getDimensions !== "function") return null;
 
   const dimensions = viewer.getDimensions();
@@ -120,59 +220,22 @@ function getNormalizationScale(viewer) {
   );
 
   if (!Number.isFinite(maxDimension) || maxDimension <= 0) return null;
+  return { dimensions, maxDimension };
+}
 
-  const scale = normalizedModelExtent / maxDimension;
+function formatUniformScale(scale) {
   const formattedScale = Number(scale.toPrecision(8)).toString();
   return `${formattedScale} ${formattedScale} ${formattedScale}`;
 }
 
-function applyNormalizationScale(viewer, normalization) {
-  if (!normalization.scaleAttribute) return;
-  viewer.setAttribute("scale", normalization.scaleAttribute);
+function getNormalizationScale(partsDimensions) {
+  if (!partsDimensions?.maxDimension) return null;
+  return formatUniformScale(normalizedModelExtent / partsDimensions.maxDimension);
 }
 
-function toggleTexture(viewer, button, title, normalization) {
-  const partsSrc = button.dataset.partsSrc;
-  const texturedSrc = button.dataset.texturedSrc;
-  const label = button.querySelector("[data-texture-label]");
-  if (!partsSrc || !texturedSrc) return;
-
-  const isShowingTextured = viewer.getAttribute("src") === texturedSrc;
-  const nextSrc = isShowingTextured ? partsSrc : texturedSrc;
-  if (viewer.getAttribute("src") === nextSrc) return;
-
-  button.disabled = true;
-  if (label) label.textContent = isShowingTextured ? "Loading parts & axes" : "Loading textured animation";
-  applyNormalizationScale(viewer, normalization);
-
-  const cleanup = () => {
-    viewer.removeEventListener("load", handleLoad);
-    viewer.removeEventListener("error", handleError);
-  };
-
-  const handleLoad = () => {
-    if (viewer.getAttribute("src") !== nextSrc) return;
-    cleanup();
-    const nowShowingTextured = nextSrc === texturedSrc;
-    applyNormalizationScale(viewer, normalization);
-    button.disabled = false;
-    button.classList.toggle("is-textured", nowShowingTextured);
-    if (label) label.textContent = nowShowingTextured ? "Show parts & axes" : "Show textured animation";
-    button.setAttribute(
-      "aria-label",
-      `${nowShowingTextured ? "Show parts & axes" : "Show textured animation"} for ${title}`,
-    );
-  };
-
-  const handleError = () => {
-    cleanup();
-    button.disabled = false;
-    if (label) label.textContent = isShowingTextured ? "Show parts & axes" : "Show textured animation";
-  };
-
-  viewer.addEventListener("load", handleLoad, { once: true });
-  viewer.addEventListener("error", handleError, { once: true });
-  viewer.setAttribute("src", nextSrc);
+function applyNormalizationScale(viewer, normalization) {
+  if (!viewer || !normalization.scaleAttribute) return;
+  viewer.setAttribute("scale", normalization.scaleAttribute);
 }
 
 export function renderGenerationGrid(grid, items, options = {}) {
