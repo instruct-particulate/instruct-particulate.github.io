@@ -1,806 +1,853 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#ffffff" />
-    <meta name="color-scheme" content="light" />
-    <meta
-      name="description"
-      content="Instruct-Particulate scales feed-forward 3D object articulation with kinematic control."
-    />
-    <link rel="canonical" href="https://instruct-particulate.github.io/" />
 
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://instruct-particulate.github.io/" />
-    <meta
-      property="og:title"
-      content="Instruct-Particulate: Scaling Feed-Forward 3D Object Articulation with Kinematic Control"
-    />
-    <meta
-      property="og:description"
-      content="A feed-forward model for predicting articulated 3D objects with optional kinematic prompting."
-    />
-    <meta property="og:site_name" content="Instruct-Particulate" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="color-scheme" content="light" />
+  <meta name="description"
+    content="Instruct-Particulate scales feed-forward 3D object articulation with kinematic control." />
+  <link rel="canonical" href="https://instruct-particulate.github.io/" />
 
-    <meta name="twitter:card" content="summary" />
-    <meta
-      name="twitter:title"
-      content="Instruct-Particulate: Scaling Feed-Forward 3D Object Articulation with Kinematic Control"
-    />
-    <meta
-      name="twitter:description"
-      content="A feed-forward model for predicting articulated 3D objects with optional kinematic prompting."
-    />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://instruct-particulate.github.io/" />
+  <meta property="og:title"
+    content="Instruct-Particulate: Scaling Feed-Forward 3D Object Articulation with Kinematic Control" />
+  <meta property="og:description"
+    content="A feed-forward model for predicting articulated 3D objects with optional kinematic prompting." />
+  <meta property="og:site_name" content="Instruct-Particulate" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700&display=swap"
-    />
-    <link rel="stylesheet" href="webpage/image_conditioned/gallery.css" />
-    <script type="module" src="https://unpkg.com/@google/model-viewer@4.3.1/dist/model-viewer.min.js"></script>
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title"
+    content="Instruct-Particulate: Scaling Feed-Forward 3D Object Articulation with Kinematic Control" />
+  <meta name="twitter:description"
+    content="A feed-forward model for predicting articulated 3D objects with optional kinematic prompting." />
 
-    <title>Instruct-Particulate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700&display=swap" />
+  <link rel="stylesheet" href="webpage/image_conditioned/gallery.css" />
+  <script type="module" src="https://unpkg.com/@google/model-viewer@4.3.1/dist/model-viewer.min.js"></script>
 
-    <style>
+  <title>Instruct-Particulate</title>
+
+  <style>
+    :root {
+      --surface-0: #ffffff;
+      --surface-1: #fafafa;
+      --surface-2: #f6f7f8;
+      --text-primary: #111111;
+      --text-secondary: #4d5561;
+      --border-default: rgba(17, 17, 17, 0.12);
+      --accent: #0c8ce9;
+      --page-width: 1180px;
+      --page-gutter: 48px;
+      --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: "SF Mono", "Consolas", "Liberation Mono", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      color-scheme: light;
+      scroll-behavior: smooth;
+      scroll-padding-top: 72px;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text-primary);
+      background: var(--surface-2);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      letter-spacing: 0;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    button {
+      font: inherit;
+      letter-spacing: inherit;
+    }
+
+    video::-webkit-media-controls,
+    video::-webkit-media-controls-enclosure,
+    video::-webkit-media-controls-panel,
+    video::-webkit-media-controls-overlay-play-button,
+    video::-webkit-media-controls-start-playback-button {
+      display: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    ::selection {
+      background: rgba(12, 140, 233, 0.22);
+      color: inherit;
+    }
+
+    :focus {
+      outline: none;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .project-page {
+      min-height: 100vh;
+      background: var(--surface-2);
+    }
+
+    .site-nav {
+      position: fixed;
+      z-index: 50;
+      top: 0;
+      right: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 56px;
+      padding: 0 32px;
+      background: rgba(255, 255, 255, 0.9);
+      border-bottom: 1px solid rgba(17, 17, 17, 0.12);
+      backdrop-filter: blur(18px);
+    }
+
+    .site-mark,
+    .site-nav a {
+      color: #111111;
+      text-decoration: none;
+    }
+
+    .site-mark {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .brand-smallcaps {
+      font-variant-caps: small-caps;
+      font-feature-settings: "smcp" 1, "c2sc" 1;
+      letter-spacing: 0.03em;
+    }
+
+    .site-nav nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 4px;
+    }
+
+    .site-nav nav a {
+      color: #50565f;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .site-nav nav a:hover,
+    .site-nav nav a:focus-visible {
+      color: #0056c8;
+    }
+
+    .hero-section {
+      --hero-enter-progress: 0;
+      position: relative;
+      isolation: isolate;
+      min-height: 240vh;
+      background: #111111;
+    }
+
+    .hero-sticky-media {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .hero-video,
+    .hero-scrim {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero-video {
+      z-index: -2;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.72s ease;
+    }
+
+    .hero-section.is-hero-video-ready .hero-video {
+      opacity: calc(1 - (var(--hero-enter-progress) * 0.28));
+    }
+
+    .hero-scrim {
+      z-index: -1;
+      opacity: var(--hero-enter-progress);
+      background:
+        linear-gradient(90deg, rgba(5, 8, 12, 0.88), rgba(5, 8, 12, 0.58) 46%, rgba(5, 8, 12, 0.18)),
+        linear-gradient(180deg, rgba(5, 8, 12, 0.25) 0%, rgba(5, 8, 12, 0.78) 100%);
+      transition: opacity 0.52s ease;
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: min(var(--page-width), calc(100% - var(--page-gutter)));
+      min-height: 100vh;
+      margin: -100vh auto 0;
+      padding: 86px 0 58px;
+      color: #ffffff;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      opacity: var(--hero-enter-progress);
+      transform: translateY(calc((1 - var(--hero-enter-progress)) * 72px));
+      visibility: hidden;
+      pointer-events: none;
+      will-change: opacity, transform;
+      transition: opacity 0.52s ease, transform 0.52s ease, visibility 0s linear 0.52s;
+    }
+
+    .hero-section.is-hero-content-visible .hero-content {
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity 0.52s ease, transform 0.52s ease, visibility 0s linear;
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      color: #9ec4ff;
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .hero-content h1 {
+      max-width: 1120px;
+      margin: 0 auto;
+      font-size: clamp(36px, 5.4vw, 64px);
+      font-weight: 650;
+      line-height: 1.02;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .hero-authors {
+      display: grid;
+      gap: 10px;
+      max-width: var(--page-width);
+      margin: 28px auto 0;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: clamp(16px, 2vw, 22px);
+      font-weight: 520;
+      line-height: 1.45;
+    }
+
+    .hero-author-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px 28px;
+    }
+
+    .hero-author {
+      color: inherit;
+      text-decoration: none;
+      text-underline-offset: 4px;
+      transition: color 0.16s ease;
+    }
+
+    .hero-author:hover,
+    .hero-author:focus-visible {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+
+    .hero-author sup,
+    .hero-affiliations sup,
+    .hero-equal-note sup {
+      margin-left: 2px;
+      font-size: 0.7em;
+      line-height: 0;
+    }
+
+    .hero-affiliations {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px 24px;
+      margin: 18px auto 0;
+      color: rgba(255, 255, 255, 0.88);
+      font-size: clamp(15px, 1.6vw, 18px);
+      font-weight: 560;
+    }
+
+    .hero-equal-note {
+      margin: 8px 0 0;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 13px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin: 28px auto 0;
+    }
+
+    .hero-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 18px;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1;
+      text-decoration: none;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+      backdrop-filter: blur(14px);
+      transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+    }
+
+    .hero-action:hover,
+    .hero-action:focus-visible {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.24);
+      border-color: rgba(255, 255, 255, 0.62);
+      transform: translateY(-1px);
+    }
+
+    .hero-action svg {
+      display: block;
+      width: 18px;
+      height: 18px;
+    }
+
+    .huggingface-mark {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .hero-summary {
+      max-width: 820px;
+      margin: 22px auto 0;
+      color: rgba(255, 255, 255, 0.84);
+      text-align: left;
+      font-size: 17px;
+      line-height: 1.5;
+      text-wrap: pretty;
+    }
+
+    .content-section {
+      --content-measure: 820px;
+      width: min(var(--page-width), calc(100% - var(--page-gutter)));
+      margin: 0 auto;
+      padding: 84px 0;
+    }
+
+    .section-heading {
+      width: 820px;
+      max-width: 100%;
+      margin: 0 auto 30px;
+      text-align: center;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: #111111;
+      font-size: clamp(28px, 4vw, 46px);
+      font-weight: 640;
+      line-height: 1.08;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .section-heading p {
+      max-width: 760px;
+      margin: 14px auto 0;
+      color: var(--text-secondary);
+      font-size: clamp(17px, 1.8vw, 21px);
+      line-height: 1.5;
+      text-wrap: pretty;
+    }
+
+    .data-video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      background: #f4f1eb;
+      border: 1px solid rgba(17, 17, 17, 0.12);
+      border-radius: 8px;
+      box-shadow: 0 18px 45px rgba(17, 17, 17, 0.08);
+    }
+
+    .data-copy {
+      width: 820px;
+      max-width: 100%;
+      margin: 26px auto 0;
+      color: var(--text-secondary);
+      font-size: clamp(15px, 1.35vw, 17px);
+      line-height: 1.68;
+      text-align: left;
+      text-wrap: pretty;
+    }
+
+    .data-copy p {
+      margin: 0;
+    }
+
+    .data-copy ul {
+      margin: 18px 0 0;
+      padding-left: 1.25em;
+    }
+
+    .data-copy li+li {
+      margin-top: 10px;
+    }
+
+    .generation-section .data-copy {
+      margin-bottom: 34px;
+    }
+
+    .citation-section {
+      border-bottom: 0;
+    }
+
+    .citation-code-wrap {
+      position: relative;
+    }
+
+    .citation-copy-button {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 34px;
+      padding: 0 12px;
+      color: #171a1f;
+      background: #f7f8fa;
+      border: 1px solid rgba(17, 17, 17, 0.14);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 1;
+      cursor: pointer;
+      transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+    }
+
+    .citation-copy-button:hover,
+    .citation-copy-button:focus-visible {
+      background: #ffffff;
+      border-color: rgba(17, 17, 17, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .citation-copy-button svg {
+      display: block;
+      width: 16px;
+      height: 16px;
+    }
+
+    .citation-bibtex {
+      margin: 0;
+      padding: 18px 118px 18px 18px;
+      overflow-x: auto;
+      color: #171a1f;
+      background: #ffffff;
+      border: 1px solid rgba(17, 17, 17, 0.12);
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.65;
+      white-space: pre;
+    }
+
+    @media (max-width: 760px) {
       :root {
-        --surface-0: #ffffff;
-        --surface-1: #fafafa;
-        --surface-2: #f6f7f8;
-        --text-primary: #111111;
-        --text-secondary: #4d5561;
-        --border-default: rgba(17, 17, 17, 0.12);
-        --accent: #0c8ce9;
-        --page-width: 1180px;
-        --page-gutter: 48px;
-        --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        --font-mono: "SF Mono", "Consolas", "Liberation Mono", monospace;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      html {
-        color-scheme: light;
-        scroll-behavior: smooth;
-        scroll-padding-top: 72px;
-        -webkit-text-size-adjust: 100%;
-      }
-
-      body {
-        min-height: 100vh;
-        margin: 0;
-        color: var(--text-primary);
-        background: var(--surface-2);
-        font-family: var(--font-sans);
-        font-size: 13px;
-        letter-spacing: 0;
-        text-rendering: optimizeLegibility;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        overflow-x: hidden;
-      }
-
-      a {
-        color: inherit;
-      }
-
-      button {
-        font: inherit;
-        letter-spacing: inherit;
-      }
-
-      video::-webkit-media-controls,
-      video::-webkit-media-controls-enclosure,
-      video::-webkit-media-controls-panel,
-      video::-webkit-media-controls-overlay-play-button,
-      video::-webkit-media-controls-start-playback-button {
-        display: none !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-      }
-
-      ::selection {
-        background: rgba(12, 140, 233, 0.22);
-        color: inherit;
-      }
-
-      :focus {
-        outline: none;
-      }
-
-      :focus-visible {
-        outline: 2px solid var(--accent);
-        outline-offset: 2px;
-      }
-
-      .project-page {
-        min-height: 100vh;
-        background: var(--surface-2);
+        --page-gutter: 32px;
       }
 
       .site-nav {
-        position: fixed;
-        z-index: 50;
-        top: 0;
-        right: 0;
-        left: 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 24px;
-        min-height: 56px;
-        padding: 0 32px;
-        background: rgba(255, 255, 255, 0.9);
-        border-bottom: 1px solid rgba(17, 17, 17, 0.12);
-        backdrop-filter: blur(18px);
-      }
-
-      .site-mark,
-      .site-nav a {
-        color: #111111;
-        text-decoration: none;
-      }
-
-      .site-mark {
-        font-size: 13px;
-        font-weight: 700;
-      }
-
-      .brand-smallcaps {
-        font-variant-caps: small-caps;
-        font-feature-settings: "smcp" 1, "c2sc" 1;
-        letter-spacing: 0.03em;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+        padding: 10px 20px;
       }
 
       .site-nav nav {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        gap: 4px;
+        justify-content: flex-start;
       }
 
       .site-nav nav a {
-        color: #50565f;
-        padding: 8px 10px;
-        font-size: 12px;
-        font-weight: 500;
-      }
-
-      .site-nav nav a:hover,
-      .site-nav nav a:focus-visible {
-        color: #0056c8;
-      }
-
-      .hero-section {
-        --hero-enter-progress: 0;
-        position: relative;
-        isolation: isolate;
-        min-height: 240vh;
-        background: #111111;
-      }
-
-      .hero-sticky-media {
-        position: sticky;
-        top: 0;
-        height: 100vh;
-        overflow: hidden;
-      }
-
-      .hero-video,
-      .hero-scrim {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-      }
-
-      .hero-video {
-        z-index: -2;
-        object-fit: cover;
-        opacity: 0;
-        transition: opacity 0.72s ease;
-      }
-
-      .hero-section.is-hero-video-ready .hero-video {
-        opacity: calc(1 - (var(--hero-enter-progress) * 0.28));
-      }
-
-      .hero-scrim {
-        z-index: -1;
-        opacity: var(--hero-enter-progress);
-        background:
-          linear-gradient(90deg, rgba(5, 8, 12, 0.88), rgba(5, 8, 12, 0.58) 46%, rgba(5, 8, 12, 0.18)),
-          linear-gradient(180deg, rgba(5, 8, 12, 0.25) 0%, rgba(5, 8, 12, 0.78) 100%);
-        transition: opacity 0.52s ease;
+        padding: 5px 8px 6px 0;
       }
 
       .hero-content {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        width: min(var(--page-width), calc(100% - var(--page-gutter)));
-        min-height: 100vh;
-        margin: -100vh auto 0;
-        padding: 86px 0 58px;
-        color: #ffffff;
-        text-align: center;
-        position: sticky;
-        top: 0;
-        z-index: 1;
-        opacity: var(--hero-enter-progress);
-        transform: translateY(calc((1 - var(--hero-enter-progress)) * 72px));
-        visibility: hidden;
-        pointer-events: none;
-        will-change: opacity, transform;
-        transition: opacity 0.52s ease, transform 0.52s ease, visibility 0s linear 0.52s;
-      }
-
-      .hero-section.is-hero-content-visible .hero-content {
-        visibility: visible;
-        pointer-events: auto;
-        transition: opacity 0.52s ease, transform 0.52s ease, visibility 0s linear;
-      }
-
-      .eyebrow {
-        margin: 0 0 14px;
-        color: #9ec4ff;
-        text-transform: uppercase;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
+        padding: 112px 0 48px;
       }
 
       .hero-content h1 {
-        max-width: 1120px;
-        margin: 0 auto;
-        font-size: clamp(36px, 5.4vw, 64px);
-        font-weight: 650;
-        line-height: 1.02;
-        letter-spacing: 0;
-        text-wrap: balance;
-      }
-
-      .hero-authors {
-        display: grid;
-        gap: 10px;
-        max-width: var(--page-width);
-        margin: 28px auto 0;
-        color: rgba(255, 255, 255, 0.92);
-        font-size: clamp(16px, 2vw, 22px);
-        font-weight: 520;
-        line-height: 1.45;
+        font-size: clamp(34px, 10vw, 48px);
       }
 
       .hero-author-row {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px 28px;
-      }
-
-      .hero-author {
-        color: inherit;
-        text-decoration: none;
-        text-underline-offset: 4px;
-        transition: color 0.16s ease;
-      }
-
-      .hero-author:hover,
-      .hero-author:focus-visible {
-        color: #ffffff;
-        text-decoration: underline;
-      }
-
-      .hero-author sup,
-      .hero-affiliations sup,
-      .hero-equal-note sup {
-        margin-left: 2px;
-        font-size: 0.7em;
-        line-height: 0;
-      }
-
-      .hero-affiliations {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 6px 24px;
-        margin: 18px auto 0;
-        color: rgba(255, 255, 255, 0.88);
-        font-size: clamp(15px, 1.6vw, 18px);
-        font-weight: 560;
-      }
-
-      .hero-equal-note {
-        margin: 8px 0 0;
-        color: rgba(255, 255, 255, 0.68);
-        font-size: 13px;
-      }
-
-      .hero-actions {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 12px;
-        margin: 28px auto 0;
-      }
-
-      .hero-action {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        min-height: 44px;
-        padding: 0 18px;
-        color: #ffffff;
-        background: rgba(255, 255, 255, 0.14);
-        border: 1px solid rgba(255, 255, 255, 0.28);
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 700;
-        line-height: 1;
-        text-decoration: none;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
-        backdrop-filter: blur(14px);
-        transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
-      }
-
-      .hero-action:hover,
-      .hero-action:focus-visible {
-        color: #ffffff;
-        background: rgba(255, 255, 255, 0.24);
-        border-color: rgba(255, 255, 255, 0.62);
-        transform: translateY(-1px);
-      }
-
-      .hero-action svg {
-        display: block;
-        width: 18px;
-        height: 18px;
-      }
-
-      .huggingface-mark {
-        font-size: 18px;
-        line-height: 1;
+        gap: 8px 18px;
       }
 
       .hero-summary {
-        max-width: 820px;
-        margin: 22px auto 0;
-        color: rgba(255, 255, 255, 0.84);
-        text-align: left;
-        font-size: 17px;
-        line-height: 1.5;
-        text-wrap: pretty;
+        font-size: 16px;
+        display: none;
       }
 
       .content-section {
-        width: min(var(--page-width), calc(100% - var(--page-gutter)));
-        margin: 0 auto;
-        padding: 84px 0;
-      }
-
-      .section-heading {
-        margin-bottom: 32px;
-        text-align: center;
-      }
-
-      .section-heading h2 {
-        margin: 0;
-        color: #111111;
-        font-size: clamp(28px, 4vw, 46px);
-        font-weight: 640;
-        line-height: 1.08;
-        letter-spacing: 0;
-      }
-
-      .section-heading p {
-        max-width: 760px;
-        margin: 14px auto 0;
-        color: var(--text-secondary);
-        font-size: clamp(17px, 1.8vw, 21px);
-        line-height: 1.5;
-        text-wrap: pretty;
-      }
-
-      .data-video {
-        display: block;
-        width: 100%;
-        aspect-ratio: 16 / 9;
-        object-fit: cover;
-        background: #f4f1eb;
-        border: 1px solid rgba(17, 17, 17, 0.12);
-        border-radius: 8px;
-        box-shadow: 0 18px 45px rgba(17, 17, 17, 0.08);
+        padding: 58px 0;
       }
 
       .data-copy {
-        max-width: 900px;
-        margin: 28px auto 0;
-        color: var(--text-secondary);
-        font-size: clamp(16px, 1.6vw, 19px);
-        line-height: 1.6;
-        text-align: left;
-        text-wrap: pretty;
+        margin-top: 20px;
+        font-size: 15px;
+        line-height: 1.55;
       }
 
-      .data-copy p {
-        margin: 0;
-      }
-
-      .citation-section {
-        border-bottom: 0;
-      }
-
-      .citation-code-wrap {
-        position: relative;
-      }
-
-      .citation-copy-button {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        z-index: 1;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 7px;
-        min-height: 34px;
-        padding: 0 12px;
-        color: #171a1f;
-        background: #f7f8fa;
-        border: 1px solid rgba(17, 17, 17, 0.14);
-        border-radius: 8px;
-        font-size: 12px;
-        font-weight: 650;
-        line-height: 1;
-        cursor: pointer;
-        transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
-      }
-
-      .citation-copy-button:hover,
-      .citation-copy-button:focus-visible {
-        background: #ffffff;
-        border-color: rgba(17, 17, 17, 0.3);
-        transform: translateY(-1px);
-      }
-
-      .citation-copy-button svg {
-        display: block;
-        width: 16px;
-        height: 16px;
+      .generation-section .data-copy {
+        margin-bottom: 24px;
       }
 
       .citation-bibtex {
-        margin: 0;
-        padding: 18px 118px 18px 18px;
-        overflow-x: auto;
-        color: #171a1f;
-        background: #ffffff;
-        border: 1px solid rgba(17, 17, 17, 0.12);
-        border-radius: 8px;
-        font-family: var(--font-mono);
-        font-size: 13px;
-        line-height: 1.65;
-        white-space: pre;
+        padding: 58px 16px 16px;
+        font-size: 12px;
+        line-height: 1.58;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
       }
 
-      @media (max-width: 760px) {
-        :root {
-          --page-gutter: 32px;
-        }
-
-        .site-nav {
-          align-items: flex-start;
-          flex-direction: column;
-          gap: 5px;
-          padding: 10px 20px;
-        }
-
-        .site-nav nav {
-          justify-content: flex-start;
-        }
-
-        .site-nav nav a {
-          padding: 5px 8px 6px 0;
-        }
-
-        .hero-content {
-          padding: 112px 0 48px;
-        }
-
-        .hero-content h1 {
-          font-size: clamp(34px, 10vw, 48px);
-        }
-
-        .hero-author-row {
-          gap: 8px 18px;
-        }
-
-        .hero-summary {
-          font-size: 16px;
-          display: none;
-        }
-
-        .content-section {
-          padding: 58px 0;
-        }
-
-        .data-copy {
-          margin-top: 20px;
-          font-size: 15px;
-          line-height: 1.55;
-        }
-
-        .citation-bibtex {
-          padding: 58px 16px 16px;
-          font-size: 12px;
-          line-height: 1.58;
-        }
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
       }
+    }
+  </style>
+</head>
 
-      @media (prefers-reduced-motion: reduce) {
-        html {
-          scroll-behavior: auto;
-        }
+<body>
+  <main class="project-page">
+    <header class="site-nav">
+      <a href="#top" class="site-mark brand-smallcaps">Instruct-Particulate</a>
+      <nav aria-label="Project sections">
+        <a href="https://huggingface.co/spaces/rayli/instruct-particulate" target="_blank" rel="noreferrer">Demo</a>
+        <a href="#data">Data Scaling</a>
+        <a href="#image-conditioned">Image-to-Articulated 3D</a>
+        <a href="#citation">Citation</a>
+      </nav>
+    </header>
 
-        *,
-        *::before,
-        *::after {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-        }
-      }
-    </style>
-  </head>
+    <section id="top" class="hero-section" aria-labelledby="project-title">
+      <div class="hero-sticky-media" aria-hidden="true">
+        <video class="hero-video" src="webpage/hero/cycles_video.mp4" autoplay muted loop playsinline
+          preload="auto"></video>
+        <div class="hero-scrim"></div>
+      </div>
 
-  <body>
-    <main class="project-page">
-      <header class="site-nav">
-        <a href="#top" class="site-mark brand-smallcaps">Instruct-Particulate</a>
-        <nav aria-label="Project sections">
-          <a href="https://huggingface.co/spaces/rayli/instruct-particulate" target="_blank" rel="noreferrer">Demo</a>
-          <a href="#data">Data Scaling</a>
-          <a href="#image-conditioned">Image-Conditioned</a>
-          <a href="#citation">Citation</a>
-        </nav>
-      </header>
+      <div class="hero-content">
+        <h1 id="project-title">
+          <span class="brand-smallcaps">Instruct-Particulate</span>: Scaling Feed-Forward 3D Object Articulation with
+          Kinematic Control
+        </h1>
 
-      <section id="top" class="hero-section" aria-labelledby="project-title">
-        <div class="hero-sticky-media" aria-hidden="true">
-          <video
-            class="hero-video"
-            src="webpage/hero/cycles_video.mp4"
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="auto"
-          ></video>
-          <div class="hero-scrim"></div>
-        </div>
-
-        <div class="hero-content">
-          <h1 id="project-title">
-            <span class="brand-smallcaps">Instruct-Particulate</span>: Scaling Feed-Forward 3D Object Articulation with Kinematic Control
-          </h1>
-
-          <div class="hero-authors" aria-label="Authors">
-            <div class="hero-author-row">
-              <a class="hero-author" href="https://ruiningli.com/" target="_blank" rel="noreferrer">Ruining Li<sup>1*</sup></a>
-              <a class="hero-author" href="https://yuxinyao620.github.io/" target="_blank" rel="noreferrer">Yuxin Yao<sup>2*</sup></a>
-              <a class="hero-author" href="https://mattzh72.github.io/" target="_blank" rel="noreferrer">Matt Zhou<sup>2</sup></a>
-              <a class="hero-author" href="https://physicalvision.github.io/people/~chuanxia" target="_blank" rel="noreferrer">Chuanxia Zheng<sup>3</sup></a>
-            </div>
-            <div class="hero-author-row">
-              <a class="hero-author" href="https://chrirupp.github.io/" target="_blank" rel="noreferrer">Christian Rupprecht<sup>1</sup></a>
-              <a class="hero-author" href="https://www.eng.cam.ac.uk/profiles/jl221" target="_blank" rel="noreferrer">Joan Lasenby<sup>2</sup></a>
-              <a class="hero-author" href="https://www.elliottwu.com/" target="_blank" rel="noreferrer">Shangzhe Wu<sup>2&dagger;</sup></a>
-              <a class="hero-author" href="https://www.robots.ox.ac.uk/~vedaldi/" target="_blank" rel="noreferrer">Andrea Vedaldi<sup>1&dagger;</sup></a>
-            </div>
+        <div class="hero-authors" aria-label="Authors">
+          <div class="hero-author-row">
+            <a class="hero-author" href="https://ruiningli.com/" target="_blank" rel="noreferrer">Ruining
+              Li<sup>1*</sup></a>
+            <a class="hero-author" href="https://yuxinyao620.github.io/" target="_blank" rel="noreferrer">Yuxin
+              Yao<sup>2*</sup></a>
+            <a class="hero-author" href="https://mattzh72.github.io/" target="_blank" rel="noreferrer">Matt
+              Zhou<sup>2</sup></a>
+            <a class="hero-author" href="https://physicalvision.github.io/people/~chuanxia" target="_blank"
+              rel="noreferrer">Chuanxia Zheng<sup>3</sup></a>
           </div>
-
-          <div class="hero-affiliations" aria-label="Affiliations">
-            <span><sup>1</sup>University of Oxford</span>
-            <span><sup>2</sup>University of Cambridge</span>
-            <span><sup>3</sup>Nanyang Technological University</span>
+          <div class="hero-author-row">
+            <a class="hero-author" href="https://chrirupp.github.io/" target="_blank" rel="noreferrer">Christian
+              Rupprecht<sup>1</sup></a>
+            <a class="hero-author" href="https://www.eng.cam.ac.uk/profiles/jl221" target="_blank" rel="noreferrer">Joan
+              Lasenby<sup>2</sup></a>
+            <a class="hero-author" href="https://www.elliottwu.com/" target="_blank" rel="noreferrer">Shangzhe
+              Wu<sup>2&dagger;</sup></a>
+            <a class="hero-author" href="https://www.robots.ox.ac.uk/~vedaldi/" target="_blank" rel="noreferrer">Andrea
+              Vedaldi<sup>1&dagger;</sup></a>
           </div>
-
-          <p class="hero-equal-note"><sup>*</sup> Equal contribution. <sup>&dagger;</sup> Equal advising.</p>
-
-          <div class="hero-actions" aria-label="Project resources">
-            <a class="hero-action" href="https://arxiv.org/abs/2512.11798" target="_blank" rel="noreferrer">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z" />
-                <path d="M14 2v5h5" />
-                <path d="M9 13h6" />
-                <path d="M9 17h6" />
-                <path d="M9 9h1" />
-              </svg>
-              <span>Technical Report</span>
-            </a>
-            <a class="hero-action" href="https://huggingface.co/spaces/rayli/instruct-particulate" target="_blank" rel="noreferrer">
-              <span class="huggingface-mark" aria-hidden="true">🤗</span>
-              <span>Demo</span>
-            </a>
-          </div>
-
-          <p class="hero-summary">
-            <span class="brand-smallcaps">Instruct-Particulate</span> predicts kinematic part segmentation and joint motion parameters from a static 3D mesh, guided by optional kinematic specifications such as part descriptions, connectivity, joint types, and point prompts.
-          </p>
-        </div>
-      </section>
-
-      <section id="data" class="content-section data-section">
-        <div class="section-heading">
-          <h2>Data Scaling</h2>
         </div>
 
-        <video
-          class="data-video"
-          src="webpage/data/data-scaling.mp4"
-          autoplay
-          muted
-          loop
-          playsinline
-          preload="metadata"
-          aria-label="Data scaling animation for the Instruct-Particulate training data mixture"
-        ></video>
-
-        <div class="data-copy">
-          <p>
-            <span class="brand-smallcaps">Instruct-Particulate</span> is trained on a heterogeneous mixture designed to move beyond the small pool of hand-annotated articulated assets. Starting from existing public articulated 3D datasets, we scale the training data with complementary sources: articulated assets generated by a coding agent with joint supervision, synthetic 3D objects pseudo-labeled with kinematic parts by a vision-language pipeline, and generic part-segmented 3D models adapted with part captions. This brings the training pool to more than 150K 3D objects, increasing both data volume and category diversity while the kinematic conditioning specifies which part structure the model should predict.
-          </p>
-        </div>
-      </section>
-
-      <section id="image-conditioned" class="content-section generation-section">
-        <div class="section-heading">
-          <h2>Image-Conditioned Generation of Articulated 3D Assets</h2>
+        <div class="hero-affiliations" aria-label="Affiliations">
+          <span><sup>1</sup>University of Oxford</span>
+          <span><sup>2</sup>University of Cambridge</span>
+          <span><sup>3</sup>Nanyang Technological University</span>
         </div>
 
-        <div class="generation-grid" data-generation-grid data-limit="9" aria-label="Image-conditioned articulated 3D asset results">
-        </div>
+        <p class="hero-equal-note"><sup>*</sup> Equal contribution. <sup>&dagger;</sup> Equal advising.</p>
 
-        <div class="generation-more-wrap" data-generation-more hidden>
-          <a class="generation-more-link" href="gallery/">View Full Gallery</a>
-        </div>
-      </section>
-
-      <section id="citation" class="content-section citation-section">
-        <div class="section-heading">
-          <h2>Citation</h2>
-        </div>
-
-        <div class="citation-code-wrap">
-          <button type="button" class="citation-copy-button" data-copy-citation aria-label="Copy citation BibTeX">
-            <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+        <div class="hero-actions" aria-label="Project resources">
+          <a class="hero-action" href="https://arxiv.org/abs/2512.11798" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z" />
+              <path d="M14 2v5h5" />
+              <path d="M9 13h6" />
+              <path d="M9 17h6" />
+              <path d="M9 9h1" />
             </svg>
-            <span data-copy-label>Copy</span>
-          </button>
-          <pre class="citation-bibtex"><code>@article{li2026instructparticulate,
+            <span>Technical Report</span>
+          </a>
+          <a class="hero-action" href="https://huggingface.co/spaces/rayli/instruct-particulate" target="_blank"
+            rel="noreferrer">
+            <span class="huggingface-mark" aria-hidden="true">🤗</span>
+            <span>Demo</span>
+          </a>
+        </div>
+
+        <p class="hero-summary">
+          <span class="brand-smallcaps">Instruct-Particulate</span> predicts kinematic part segmentation and joint
+          motion parameters from a static 3D mesh, guided by optional kinematic specifications such as part
+          descriptions, connectivity, joint types, and point prompts.
+        </p>
+      </div>
+    </section>
+
+    <section id="data" class="content-section data-section">
+      <div class="section-heading">
+        <h2>Data Scaling</h2>
+      </div>
+
+      <video class="data-video" src="webpage/data/data-scaling.mp4" autoplay muted loop playsinline preload="metadata"
+        aria-label="Data scaling animation for the Instruct-Particulate training data mixture"></video>
+
+      <div class="data-copy">
+        <p>
+          Articulated 3D models are scarce due to the cost of designing and annotating them manually.
+          In developing <span class="brand-smallcaps">Instruct-Particulate</span>, we curate a massive dataset
+          consisting of the following components:
+        </p>
+        <ul>
+          <li><strong>Existing articulated 3D datasets</strong>: This is the highest quality data source, but it is
+            limited in quantity and category coverage.</li>
+          <li><strong>Articulated 3D assets generated by a coding agent</strong>: Large language models already possess
+            a strong prior on object articulation.
+            To extract this prior to explicit 3D assets, we develop <a href="https://articraft3d.github.io/"
+              target="_blank" rel="noreferrer">Articraft</a>, a coding agent that writes programs against an
+            LLM-friendly SDK to define parts, compose geometry, specify joints and motion limits.
+            The resulting assets are more diverse and provide full joint supervision.</li>
+          <li><strong>Synthetic 3D objects pseudo-labeled with kinematic parts</strong>:
+            While <span class="brand-smallcaps">Instruct-Particulate</span> takes existing 3D objects as
+            input, we aim to achieve image-conditioned articulated 3D asset generation via an off-the-shelf 3D
+            generator (see <a href="#image-conditioned">below</a>).
+            To expose the model with synthetic 3D models during training, we build an annotation pipeline that
+            identifies and segments 3D kinematic parts of synthetic 3D objects using vision-language models.
+          </li>
+          <li><strong>Generic part-segmented 3D models</strong>: Generic 3D part segmentations rarely correspond to
+            object articulation and motion. We mix them in the training data as a pre-training step for aligning text
+            prompts with 3D parts.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="image-conditioned" class="content-section generation-section">
+      <div class="section-heading">
+        <h2>Generating Articulated 3D Assets from Images</h2>
+      </div>
+
+      <div class="data-copy">
+        <p>
+          While <span class="brand-smallcaps">Instruct-Particulate</span> converts existing static 3D objects into
+          articulated ones rather than synthesizing them from scratch, our model can be used for image-conditioned
+          articulated 3D asset generation.
+          From a single image, we first reconstruct a 3D object using an off-the-shelf 3D <a
+            href="https://3d.hunyuanglobal.com/" target="_blank" rel="noreferrer">generator</a>, and then prompt a
+          vision-language model to identify the kinematic structure of the object.
+          Finally, <span class="brand-smallcaps">Instruct-Particulate</span> predicts the kinematic parts and joints in
+          a single feed-forward pass, with outputs compatible with physics simulators such as Isaac Sim and MuJoCo.
+        </p>
+      </div>
+
+      <div class="generation-grid" data-generation-grid data-limit="9"
+        aria-label="Image-conditioned articulated 3D asset results">
+      </div>
+
+      <div class="generation-more-wrap" data-generation-more hidden>
+        <a class="generation-more-link" href="gallery/">View Full Gallery</a>
+      </div>
+    </section>
+
+    <section id="citation" class="content-section citation-section">
+      <div class="section-heading">
+        <h2>Citation</h2>
+      </div>
+
+      <div class="citation-code-wrap">
+        <button type="button" class="citation-copy-button" data-copy-citation aria-label="Copy citation BibTeX">
+          <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+          </svg>
+          <span data-copy-label>Copy</span>
+        </button>
+        <pre class="citation-bibtex"><code>@article{li2026instructparticulate,
   title   = {{\textsc{Instruct-Particulate}}: Scaling Feed-Forward 3D Object Articulation with Kinematic Control},
   author  = {Li, Ruining and Yao, Yuxin and Zhou, Matt and Zheng, Chuanxia and Rupprecht, Christian and Lasenby, Joan and Wu, Shangzhe and Vedaldi, Andrea},
   journal = {arXiv preprint arXiv:2606.XXXXX},
   year    = {2026}
 }</code></pre>
-        </div>
-      </section>
-    </main>
+      </div>
+    </section>
+  </main>
 
-    <script>
-      const hero = document.querySelector(".hero-section");
-      const heroVideo = document.querySelector(".hero-video");
-      const copyButton = document.querySelector("[data-copy-citation]");
-      const copyLabel = document.querySelector("[data-copy-label]");
-      const citationText = document.querySelector(".citation-bibtex code")?.textContent ?? "";
-      let heroHasPlayedOnce = false;
-      let lastHeroVideoTime = 0;
-      let heroProgressFrame = null;
+  <script>
+    const hero = document.querySelector(".hero-section");
+    const heroVideo = document.querySelector(".hero-video");
+    const copyButton = document.querySelector("[data-copy-citation]");
+    const copyLabel = document.querySelector("[data-copy-label]");
+    const citationText = document.querySelector(".citation-bibtex code")?.textContent ?? "";
+    let heroHasPlayedOnce = false;
+    let lastHeroVideoTime = 0;
+    let heroProgressFrame = null;
 
-      function markVideoReady() {
-        hero?.classList.add("is-hero-video-ready");
+    function markVideoReady() {
+      hero?.classList.add("is-hero-video-ready");
+    }
+
+    function setHeroProgress(progress) {
+      if (!hero) return;
+      const normalized = Math.min(Math.max(progress, 0), 1);
+      hero.style.setProperty("--hero-enter-progress", normalized.toFixed(4));
+      hero.classList.toggle("is-hero-content-visible", normalized > 0.02);
+    }
+
+    function updateHeroProgress() {
+      heroProgressFrame = null;
+      if (!hero) return;
+      const viewportHeight = window.innerHeight || 1;
+      const rect = hero.getBoundingClientRect();
+      const enterStart = viewportHeight * 0.08;
+      const enterDistance = viewportHeight * 0.82;
+      const scrollProgress = Math.min(Math.max((-rect.top - enterStart) / enterDistance, 0), 1);
+      setHeroProgress(heroHasPlayedOnce ? 1 : scrollProgress);
+    }
+
+    function requestHeroProgressUpdate() {
+      if (heroProgressFrame === null) {
+        heroProgressFrame = window.requestAnimationFrame(updateHeroProgress);
       }
+    }
 
-      function setHeroProgress(progress) {
-        if (!hero) return;
-        const normalized = Math.min(Math.max(progress, 0), 1);
-        hero.style.setProperty("--hero-enter-progress", normalized.toFixed(4));
-        hero.classList.toggle("is-hero-content-visible", normalized > 0.02);
-      }
-
-      function updateHeroProgress() {
-        heroProgressFrame = null;
-        if (!hero) return;
-        const viewportHeight = window.innerHeight || 1;
-        const rect = hero.getBoundingClientRect();
-        const enterStart = viewportHeight * 0.08;
-        const enterDistance = viewportHeight * 0.82;
-        const scrollProgress = Math.min(Math.max((-rect.top - enterStart) / enterDistance, 0), 1);
-        setHeroProgress(heroHasPlayedOnce ? 1 : scrollProgress);
-      }
-
-      function requestHeroProgressUpdate() {
-        if (heroProgressFrame === null) {
-          heroProgressFrame = window.requestAnimationFrame(updateHeroProgress);
-        }
-      }
-
-      function revealHeroContent() {
-        if (heroHasPlayedOnce) return;
-        heroHasPlayedOnce = true;
-        updateHeroProgress();
-      }
-
-      function handleHeroTimeUpdate(event) {
-        if (heroHasPlayedOnce) return;
-        const video = event.currentTarget;
-        const duration = video.duration;
-        if (!Number.isFinite(duration) || duration <= 0) {
-          lastHeroVideoTime = video.currentTime;
-          return;
-        }
-
-        const looped = lastHeroVideoTime > video.currentTime + 0.5;
-        const nearEnd = video.currentTime >= duration - 0.25;
-        lastHeroVideoTime = video.currentTime;
-        if (looped || nearEnd) revealHeroContent();
-      }
-
-      if (heroVideo) {
-        heroVideo.controls = false;
-        heroVideo.disablePictureInPicture = true;
-        heroVideo.setAttribute("controlsList", "nodownload nofullscreen noremoteplayback");
-        heroVideo.addEventListener("loadedmetadata", (event) => {
-          lastHeroVideoTime = event.currentTarget.currentTime;
-        });
-        heroVideo.addEventListener("timeupdate", handleHeroTimeUpdate);
-        if (heroVideo.readyState >= 2) {
-          markVideoReady();
-        } else {
-          heroVideo.addEventListener("loadeddata", markVideoReady, { once: true });
-        }
-        heroVideo.play().catch(() => {});
-      }
-
+    function revealHeroContent() {
+      if (heroHasPlayedOnce) return;
+      heroHasPlayedOnce = true;
       updateHeroProgress();
-      window.addEventListener("scroll", requestHeroProgressUpdate, { passive: true });
-      window.addEventListener("resize", requestHeroProgressUpdate);
+    }
 
-      copyButton?.addEventListener("click", async () => {
-        try {
-          await navigator.clipboard.writeText(citationText);
-          if (copyLabel) copyLabel.textContent = "Copied";
-          window.setTimeout(() => {
-            if (copyLabel) copyLabel.textContent = "Copy";
-          }, 1800);
-        } catch {
-          if (copyLabel) copyLabel.textContent = "Select";
-        }
-      });
-    </script>
-    <script type="module">
-      import { generationItems, renderGenerationGrid } from "./webpage/image_conditioned/gallery.js";
-
-      const generationGrid = document.querySelector("[data-generation-grid]");
-      const moreWrap = document.querySelector("[data-generation-more]");
-
-      if (generationGrid) {
-        const requestedLimit = Number.parseInt(generationGrid.dataset.limit ?? "", 10);
-        const visibleCount = renderGenerationGrid(generationGrid, generationItems, {
-          limit: Number.isFinite(requestedLimit) ? requestedLimit : generationItems.length,
-        });
-
-        if (moreWrap && generationItems.length > visibleCount) {
-          moreWrap.hidden = false;
-        }
+    function handleHeroTimeUpdate(event) {
+      if (heroHasPlayedOnce) return;
+      const video = event.currentTarget;
+      const duration = video.duration;
+      if (!Number.isFinite(duration) || duration <= 0) {
+        lastHeroVideoTime = video.currentTime;
+        return;
       }
-    </script>
-  </body>
+
+      const looped = lastHeroVideoTime > video.currentTime + 0.5;
+      const nearEnd = video.currentTime >= duration - 0.25;
+      lastHeroVideoTime = video.currentTime;
+      if (looped || nearEnd) revealHeroContent();
+    }
+
+    if (heroVideo) {
+      heroVideo.controls = false;
+      heroVideo.disablePictureInPicture = true;
+      heroVideo.setAttribute("controlsList", "nodownload nofullscreen noremoteplayback");
+      heroVideo.addEventListener("loadedmetadata", (event) => {
+        lastHeroVideoTime = event.currentTarget.currentTime;
+      });
+      heroVideo.addEventListener("timeupdate", handleHeroTimeUpdate);
+      if (heroVideo.readyState >= 2) {
+        markVideoReady();
+      } else {
+        heroVideo.addEventListener("loadeddata", markVideoReady, { once: true });
+      }
+      heroVideo.play().catch(() => { });
+    }
+
+    updateHeroProgress();
+    window.addEventListener("scroll", requestHeroProgressUpdate, { passive: true });
+    window.addEventListener("resize", requestHeroProgressUpdate);
+
+    copyButton?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(citationText);
+        if (copyLabel) copyLabel.textContent = "Copied";
+        window.setTimeout(() => {
+          if (copyLabel) copyLabel.textContent = "Copy";
+        }, 1800);
+      } catch {
+        if (copyLabel) copyLabel.textContent = "Select";
+      }
+    });
+  </script>
+  <script type="module">
+    import { generationItems, renderGenerationGrid } from "./webpage/image_conditioned/gallery.js";
+
+    const generationGrid = document.querySelector("[data-generation-grid]");
+    const moreWrap = document.querySelector("[data-generation-more]");
+
+    if (generationGrid) {
+      const requestedLimit = Number.parseInt(generationGrid.dataset.limit ?? "", 10);
+      const visibleCount = renderGenerationGrid(generationGrid, generationItems, {
+        limit: Number.isFinite(requestedLimit) ? requestedLimit : generationItems.length,
+      });
+
+      if (moreWrap && generationItems.length > visibleCount) {
+        moreWrap.hidden = false;
+      }
+    }
+  </script>
+</body>
+
 </html>
