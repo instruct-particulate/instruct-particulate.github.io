@@ -51,6 +51,8 @@ const textureIcon = `
   </svg>
 `;
 
+const normalizedModelExtent = 2;
+
 function createResultCard(item) {
   const card = document.createElement("article");
   card.className = "generation-card";
@@ -69,6 +71,10 @@ function createResultCard(item) {
   viewer.setAttribute("exposure", "1");
   viewer.setAttribute("orientation", "0deg -90deg 0deg");
 
+  const normalization = {
+    scaleAttribute: null,
+  };
+
   const input = document.createElement("div");
   input.className = "generation-input";
   input.innerHTML = `
@@ -79,17 +85,53 @@ function createResultCard(item) {
   const button = document.createElement("button");
   button.type = "button";
   button.className = "generation-texture-button";
+  button.disabled = true;
   button.dataset.partsSrc = item.partsSrc;
   button.dataset.texturedSrc = item.texturedSrc;
   button.setAttribute("aria-label", `Show textured animation for ${item.title}`);
   button.innerHTML = `${textureIcon}<span data-texture-label>Show textured animation</span>`;
-  button.addEventListener("click", () => toggleTexture(viewer, button, item.title));
+  button.addEventListener("click", () => toggleTexture(viewer, button, item.title, normalization));
+
+  viewer.addEventListener("load", () => {
+    if (viewer.getAttribute("src") !== item.partsSrc) return;
+    if (!normalization.scaleAttribute) {
+      normalization.scaleAttribute = getNormalizationScale(viewer);
+      applyNormalizationScale(viewer, normalization);
+    }
+    button.disabled = false;
+  });
+
+  viewer.addEventListener("error", () => {
+    if (viewer.getAttribute("src") === item.partsSrc) button.disabled = false;
+  });
 
   card.append(viewer, input, button);
   return card;
 }
 
-function toggleTexture(viewer, button, title) {
+function getNormalizationScale(viewer) {
+  if (typeof viewer.getDimensions !== "function") return null;
+
+  const dimensions = viewer.getDimensions();
+  const maxDimension = Math.max(
+    Number(dimensions?.x) || 0,
+    Number(dimensions?.y) || 0,
+    Number(dimensions?.z) || 0,
+  );
+
+  if (!Number.isFinite(maxDimension) || maxDimension <= 0) return null;
+
+  const scale = normalizedModelExtent / maxDimension;
+  const formattedScale = Number(scale.toPrecision(8)).toString();
+  return `${formattedScale} ${formattedScale} ${formattedScale}`;
+}
+
+function applyNormalizationScale(viewer, normalization) {
+  if (!normalization.scaleAttribute) return;
+  viewer.setAttribute("scale", normalization.scaleAttribute);
+}
+
+function toggleTexture(viewer, button, title, normalization) {
   const partsSrc = button.dataset.partsSrc;
   const texturedSrc = button.dataset.texturedSrc;
   const label = button.querySelector("[data-texture-label]");
@@ -101,6 +143,7 @@ function toggleTexture(viewer, button, title) {
 
   button.disabled = true;
   if (label) label.textContent = isShowingTextured ? "Loading parts & axes" : "Loading textured animation";
+  applyNormalizationScale(viewer, normalization);
 
   const cleanup = () => {
     viewer.removeEventListener("load", handleLoad);
@@ -111,6 +154,7 @@ function toggleTexture(viewer, button, title) {
     if (viewer.getAttribute("src") !== nextSrc) return;
     cleanup();
     const nowShowingTextured = nextSrc === texturedSrc;
+    applyNormalizationScale(viewer, normalization);
     button.disabled = false;
     button.classList.toggle("is-textured", nowShowingTextured);
     if (label) label.textContent = nowShowingTextured ? "Show parts & axes" : "Show textured animation";
