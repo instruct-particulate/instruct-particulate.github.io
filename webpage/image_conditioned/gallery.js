@@ -51,8 +51,6 @@ const textureIcon = `
   </svg>
 `;
 
-const normalizedModelExtent = 2;
-
 function createGenerationViewer(src, alt, { eager = false } = {}) {
   const viewer = document.createElement("model-viewer");
   viewer.className = "generation-viewer";
@@ -66,7 +64,51 @@ function createGenerationViewer(src, alt, { eager = false } = {}) {
   viewer.setAttribute("shadow-intensity", "0.65");
   viewer.setAttribute("exposure", "1");
   viewer.setAttribute("orientation", "0deg -90deg 0deg");
+  // Pin a fixed vertical field of view (radius still auto-frames each model) so
+  // the parts and textured viewers never adapt fov independently. Equal fov is
+  // a prerequisite for the camera-radius copy in syncViewerCamera to yield an
+  // identical projection, and hence an identical on-screen scale.
+  viewer.setAttribute("field-of-view", "30deg");
   return viewer;
+}
+
+// Copy the camera state from `source` to `target`. When `copyFraming` is set,
+// the target adopts the source's exact framing (look-at target + orbit radius;
+// the field of view is already fixed and equal on both, see
+// createGenerationViewer) instead of auto-fitting to its own bounding box, so
+// both models render at the *same* scale — the textured model inherits the
+// parts-&-axes model's normalization factor rather than being re-normalized to
+// its own (axis-free, hence tighter) bounds. The current orbit angles are
+// always copied so the slowly auto-rotating models stay aligned across a
+// switch.
+//
+// The framing is written via `setAttribute` (declarative, authoritative) so it
+// survives model-viewer's own auto-framing pass, and must be applied only once
+// the target has painted at least once — otherwise its camera controller is not
+// yet initialised and the values are silently dropped / overwritten on first
+// frame. Callers therefore invoke this from inside a `requestAnimationFrame`.
+function syncViewerCamera(source, target, { copyFraming }) {
+  if (!source || !target || typeof source.getCameraOrbit !== "function") return;
+  const orbit = source.getCameraOrbit();
+  if (!orbit) return;
+  if (copyFraming) {
+    if (typeof source.getCameraTarget === "function") {
+      const center = source.getCameraTarget();
+      target.setAttribute("camera-target", `${center.x}m ${center.y}m ${center.z}m`);
+    }
+    // Pin the orbit radius: model-viewer clamps camera-orbit radius to the
+    // target's auto-computed max radius (its own tighter framing distance),
+    // which would otherwise zoom the textured model in and break scale parity.
+    // The field of view is already fixed and equal on both viewers (see
+    // createGenerationViewer), so matching radius + target = identical scale.
+    target.setAttribute("min-camera-orbit", `auto auto ${orbit.radius}m`);
+    target.setAttribute("max-camera-orbit", `auto auto ${orbit.radius}m`);
+    target.setAttribute("camera-orbit", `${orbit.theta}rad ${orbit.phi}rad ${orbit.radius}m`);
+  } else {
+    // Keep the target's own framing (auto radius/target); align rotation only.
+    target.setAttribute("camera-orbit", `${orbit.theta}rad ${orbit.phi}rad auto`);
+  }
+  if (typeof target.jumpCameraToGoal === "function") target.jumpCameraToGoal();
 }
 
 // Each card keeps two stacked viewers (parts + textured) and toggles which is
@@ -80,10 +122,6 @@ function createResultCard(item) {
   card.className = "generation-card";
   card.dataset.resultId = item.id;
 
-  const normalization = {
-    scaleAttribute: null,
-  };
-
   const partsViewer = createGenerationViewer(
     item.partsSrc,
     `Generated articulated 3D asset for ${item.title}`,
@@ -91,6 +129,7 @@ function createResultCard(item) {
 
   let texturedViewer = null;
   let showingTextured = false;
+  let partsReady = false;
 
   const input = document.createElement("div");
   input.className = "generation-input";
@@ -139,7 +178,6 @@ function createResultCard(item) {
       { eager: true },
     );
     setViewerVisible(texturedViewer, false);
-    applyNormalizationScale(texturedViewer, normalization);
     card.insertBefore(texturedViewer, input);
     return texturedViewer;
   };
@@ -148,6 +186,13 @@ function createResultCard(item) {
     showingTextured = false;
     setViewerVisible(texturedViewer, false);
     setViewerVisible(partsViewer, true);
+    // Realign the parts viewer's rotation to whatever the textured view shows,
+    // once parts has painted this frame.
+    if (texturedViewer) {
+      requestAnimationFrame(() =>
+        syncViewerCamera(texturedViewer, partsViewer, { copyFraming: false }),
+      );
+    }
     button.disabled = false;
     setButtonLabel(false);
   };
@@ -156,12 +201,18 @@ function createResultCard(item) {
     showingTextured = true;
     setViewerVisible(partsViewer, false);
     setViewerVisible(texturedViewer, true);
+    // Adopt the parts viewer's framing + current rotation so the textured model
+    // renders at the same scale and orientation. Deferred to the next frame so
+    // the textured viewer's camera controller exists and the attributes stick.
+    requestAnimationFrame(() =>
+      syncViewerCamera(partsViewer, texturedViewer, { copyFraming: true }),
+    );
     button.disabled = false;
     setButtonLabel(true);
   };
 
   button.addEventListener("click", () => {
-    if (!normalization.scaleAttribute) return;
+    if (!partsReady) return;
     if (showingTextured) {
       showParts();
       return;
@@ -194,10 +245,7 @@ function createResultCard(item) {
   });
 
   partsViewer.addEventListener("load", () => {
-    if (!normalization.scaleAttribute) {
-      normalization.scaleAttribute = getNormalizationScale(getModelDimensions(partsViewer));
-      if (texturedViewer) applyNormalizationScale(texturedViewer, normalization);
-    }
+    partsReady = true;
     button.disabled = false;
   });
 
@@ -207,35 +255,6 @@ function createResultCard(item) {
 
   card.append(partsViewer, input, button);
   return card;
-}
-
-function getModelDimensions(viewer) {
-  if (typeof viewer.getDimensions !== "function") return null;
-
-  const dimensions = viewer.getDimensions();
-  const maxDimension = Math.max(
-    Number(dimensions?.x) || 0,
-    Number(dimensions?.y) || 0,
-    Number(dimensions?.z) || 0,
-  );
-
-  if (!Number.isFinite(maxDimension) || maxDimension <= 0) return null;
-  return { dimensions, maxDimension };
-}
-
-function formatUniformScale(scale) {
-  const formattedScale = Number(scale.toPrecision(8)).toString();
-  return `${formattedScale} ${formattedScale} ${formattedScale}`;
-}
-
-function getNormalizationScale(partsDimensions) {
-  if (!partsDimensions?.maxDimension) return null;
-  return formatUniformScale(normalizedModelExtent / partsDimensions.maxDimension);
-}
-
-function applyNormalizationScale(viewer, normalization) {
-  if (!viewer || !normalization.scaleAttribute) return;
-  viewer.setAttribute("scale", normalization.scaleAttribute);
 }
 
 export function renderGenerationGrid(grid, items, options = {}) {
