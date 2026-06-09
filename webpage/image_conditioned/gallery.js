@@ -1,12 +1,5 @@
 const resultBase = "/webpage/image_conditioned/results";
 
-const microwaveDemoAsset = {
-  inputSrc: "/webpage/image_conditioned/microwave_input.png",
-  partsSrc: "/webpage/image_conditioned/microwave_parts_axes.glb",
-  texturedSrc: "/webpage/image_conditioned/microwave_textured.glb",
-  inputAlt: "Microwave conditioning input",
-};
-
 function resultAsset(id, title, options = {}) {
   const base = `${resultBase}/${id}`;
   return {
@@ -45,13 +38,51 @@ export const generationItems = [
   resultAsset("4e11c085443c93b3efb7f4df6218ab05", "Image-Conditioned Result 14", {
     inputAlt: "Drone conditioning input",
   }),
-  { id: "microwave-15", title: "Microwave Result 15", ...microwaveDemoAsset },
-  { id: "microwave-16", title: "Microwave Result 16", ...microwaveDemoAsset },
-  { id: "microwave-17", title: "Microwave Result 17", ...microwaveDemoAsset },
-  { id: "microwave-18", title: "Microwave Result 18", ...microwaveDemoAsset },
-  { id: "microwave-19", title: "Microwave Result 19", ...microwaveDemoAsset },
-  { id: "microwave-20", title: "Microwave Result 20", ...microwaveDemoAsset },
-  { id: "microwave-21", title: "Microwave Result 21", ...microwaveDemoAsset },
+  resultAsset("hy-eval-024", "Image-Conditioned Result 15", {
+    inputAlt: "Faucet conditioning input",
+  }),
+  resultAsset("hy-eval-008", "Image-Conditioned Result 16", {
+    inputAlt: "Soap dispenser conditioning input",
+  }),
+  resultAsset("hy-eval-041", "Image-Conditioned Result 17", {
+    inputAlt: "Table conditioning input",
+  }),
+  resultAsset("hy-eval-017", "Image-Conditioned Result 18", {
+    inputAlt: "Stapler conditioning input",
+  }),
+  resultAsset("hy-eval-000", "Image-Conditioned Result 19", {
+    inputAlt: "Bucket conditioning input",
+  }),
+  resultAsset("hy-eval-029", "Image-Conditioned Result 20", {
+    inputAlt: "Laptop conditioning input",
+  }),
+  resultAsset("hy-eval-013", "Image-Conditioned Result 21", {
+    inputAlt: "Suitcase conditioning input",
+  }),
+  resultAsset("hy-eval-050", "Image-Conditioned Result 22", {
+    inputAlt: "Stapler conditioning input",
+  }),
+  resultAsset("hy-eval-021", "Image-Conditioned Result 23", {
+    inputAlt: "Toilet conditioning input",
+  }),
+  resultAsset("hy-eval-005", "Image-Conditioned Result 24", {
+    inputAlt: "Globe conditioning input",
+  }),
+  resultAsset("hy-eval-039", "Image-Conditioned Result 25", {
+    inputAlt: "Desk conditioning input",
+  }),
+  resultAsset("hy-eval-012", "Image-Conditioned Result 26", {
+    inputAlt: "Soap dispenser conditioning input",
+  }),
+  resultAsset("hy-eval-026", "Image-Conditioned Result 27", {
+    inputAlt: "Stapler conditioning input",
+  }),
+  resultAsset("hy-eval-015", "Image-Conditioned Result 28", {
+    inputAlt: "Faucet conditioning input",
+  }),
+  resultAsset("hy-eval-022", "Image-Conditioned Result 29", {
+    inputAlt: "Sunglasses conditioning input",
+  }),
 ];
 
 const textureIcon = `
