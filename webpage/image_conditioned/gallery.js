@@ -83,6 +83,11 @@ export const generationItems = [
   resultAsset("hy-eval-022", "Image-Conditioned Result 29", {
     inputAlt: "Sunglasses conditioning input",
   }),
+  resultAsset("articulated-models-2-004", "Image-Conditioned Result 30"),
+  resultAsset("articulated-models-3-004", "Image-Conditioned Result 31"),
+  resultAsset("articulated-models-5-015", "Image-Conditioned Result 32"),
+  resultAsset("articulated-models-5-021", "Image-Conditioned Result 33"),
+  resultAsset("articulated-models-2-005", "Image-Conditioned Result 34"),
 ];
 
 const textureIcon = `
