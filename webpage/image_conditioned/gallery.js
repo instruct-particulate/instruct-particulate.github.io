@@ -21,8 +21,12 @@ function resultAsset(id, title, options = {}) {
 
 // Add, remove, or reorder result objects here; both the homepage and /gallery/ read this list.
 export const generationItems = [
-  resultAsset("assets-802c1ccad00e90567182698145546d2f", "Image-Conditioned Result 01", microwaveDemoAsset),
-  resultAsset("assets-54ca4892caaa2413d290c99dca417006", "Image-Conditioned Result 02", microwaveDemoAsset),
+  resultAsset("assets-802c1ccad00e90567182698145546d2f", "Image-Conditioned Result 01", {
+    inputAlt: "Stainless steel pedal bin conditioning input",
+  }),
+  resultAsset("assets-54ca4892caaa2413d290c99dca417006", "Image-Conditioned Result 02", {
+    inputAlt: "Rectangular pedal bin conditioning input",
+  }),
   resultAsset("articulated-models-2-007", "Image-Conditioned Result 03"),
   resultAsset("articulated-models-5-019", "Image-Conditioned Result 04"),
   resultAsset("articulated-models-5-011", "Image-Conditioned Result 05"),
