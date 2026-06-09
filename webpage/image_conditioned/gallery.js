@@ -32,9 +32,15 @@ export const generationItems = [
   resultAsset("articulated-models-5-010", "Image-Conditioned Result 09"),
   resultAsset("articulated-models-5-004", "Image-Conditioned Result 10"),
   resultAsset("articulated-model-046", "Image-Conditioned Result 11"),
-  { id: "microwave-12", title: "Microwave Result 12", ...microwaveDemoAsset },
-  { id: "microwave-13", title: "Microwave Result 13", ...microwaveDemoAsset },
-  { id: "microwave-14", title: "Microwave Result 14", ...microwaveDemoAsset },
+  resultAsset("2c0c6134800d926367827b58ce8a3ecf", "Image-Conditioned Result 12", {
+    inputAlt: "Stand mixer conditioning input",
+  }),
+  resultAsset("4857147c301f001520ddcfb11189fc8f", "Image-Conditioned Result 13", {
+    inputAlt: "Bicycle conditioning input",
+  }),
+  resultAsset("4e11c085443c93b3efb7f4df6218ab05", "Image-Conditioned Result 14", {
+    inputAlt: "Drone conditioning input",
+  }),
   { id: "microwave-15", title: "Microwave Result 15", ...microwaveDemoAsset },
   { id: "microwave-16", title: "Microwave Result 16", ...microwaveDemoAsset },
   { id: "microwave-17", title: "Microwave Result 17", ...microwaveDemoAsset },
