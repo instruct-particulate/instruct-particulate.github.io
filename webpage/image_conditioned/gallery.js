@@ -88,6 +88,12 @@ export const generationItems = [
   resultAsset("articulated-models-5-015", "Image-Conditioned Result 32"),
   resultAsset("articulated-models-5-021", "Image-Conditioned Result 33"),
   resultAsset("articulated-models-2-005", "Image-Conditioned Result 34"),
+  resultAsset("cfa75307489fe67b4ee40f38839e40dd", "Image-Conditioned Result 35", {
+    inputAlt: "Blender conditioning input",
+  }),
+  resultAsset("8006c06cdf7bc0c44990f021a7fc9450", "Image-Conditioned Result 36", {
+    inputAlt: "Electric cooktop conditioning input",
+  }),
 ];
 
 const textureIcon = `
