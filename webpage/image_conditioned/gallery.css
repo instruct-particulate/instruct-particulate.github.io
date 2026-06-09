@@ -37,7 +37,6 @@
   top: 12px;
   left: 12px;
   width: clamp(82px, 28%, 118px);
-  aspect-ratio: 1;
   overflow: hidden;
   background: #ffffff;
   border: 2px solid rgba(255, 255, 255, 0.94);
@@ -48,8 +47,7 @@
 .generation-input img {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  height: auto;
 }
 
 .generation-input span {
