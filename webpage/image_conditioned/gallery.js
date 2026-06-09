@@ -67,53 +67,44 @@ function createGenerationViewer(src, alt, { eager = false } = {}) {
   // Pin a fixed vertical field of view (radius still auto-frames each model) so
   // the parts and textured viewers never adapt fov independently. Equal fov is
   // a prerequisite for the camera-radius copy in syncViewerCamera to yield an
-  // identical projection, and hence an identical on-screen scale.
+  // identical projection, and hence an identical on-screen scale. Pinning
+  // min == max == field-of-view also stops model-viewer's "zoom past the closest
+  // orbit shrinks the fov" behaviour, so user zoom only ever changes the orbit
+  // radius — which we keep in sync between the two viewers.
   viewer.setAttribute("field-of-view", "30deg");
+  viewer.setAttribute("min-field-of-view", "30deg");
+  viewer.setAttribute("max-field-of-view", "30deg");
   return viewer;
 }
 
-// Copy the camera state from `source` to `target`. When `copyFraming` is set,
-// the target adopts the source's exact framing (look-at target + orbit radius;
-// the field of view is already fixed and equal on both, see
-// createGenerationViewer) instead of auto-fitting to its own bounding box, so
-// both models render at the *same* scale — the textured model inherits the
-// parts-&-axes model's normalization factor rather than being re-normalized to
-// its own (axis-free, hence tighter) bounds.
+// Mirror the full camera state from `source` onto `target` so the two viewers
+// of a pair always show the model at the same scale, position and orientation —
+// including after the user zooms, pans or drags. We copy:
+//   * camera-target   (pan / look-at point)
+//   * camera-orbit     theta, phi (manual rotation) AND radius (zoom)
+//   * turntableRotation (the `auto-rotate` scene yaw, which is independent of the
+//                        camera orbit and only advances on the visible viewer)
 //
-// Rotation alignment is the other half: `auto-rotate` spins the *scene yaw*
-// (`turntableRotation`), which is independent of the camera orbit and keeps
-// advancing on the visible viewer while the hidden one is frozen. We therefore
-// copy both the orbit angles (covers manual drags) and the turntable rotation
-// (covers auto-rotate) so the model never jumps orientation on a switch — e.g.
-// when the parts model has already auto-rotated before the textured model is
-// first revealed.
+// Because the two GLBs share a coordinate frame and the fov is fixed-equal on
+// both (see createGenerationViewer), copying the orbit radius is what makes the
+// on-screen size identical. The caller is responsible for giving both viewers a
+// shared zoom band first (see applyRadiusBounds) so the copied radius is not
+// clamped to a viewer's own tighter auto-framing distance.
 //
-// The framing is written via `setAttribute` (declarative, authoritative) so it
-// survives model-viewer's own auto-framing pass, and must be applied only once
-// the target has painted at least once — otherwise its camera controller is not
-// yet initialised and the values are silently dropped / overwritten on first
-// frame. Callers therefore invoke this from inside a `requestAnimationFrame`.
-function syncViewerCamera(source, target, { copyFraming }) {
+// Written via `setAttribute` (declarative, authoritative) so it survives
+// model-viewer's own auto-framing pass, and applied only after the target has
+// painted at least once — otherwise its camera controller is not yet
+// initialised and the values are silently dropped. Callers therefore invoke
+// this from inside a `requestAnimationFrame`.
+function syncViewerCamera(source, target) {
   if (!source || !target || typeof source.getCameraOrbit !== "function") return;
   const orbit = source.getCameraOrbit();
   if (!orbit) return;
-  if (copyFraming) {
-    if (typeof source.getCameraTarget === "function") {
-      const center = source.getCameraTarget();
-      target.setAttribute("camera-target", `${center.x}m ${center.y}m ${center.z}m`);
-    }
-    // Pin the orbit radius: model-viewer clamps camera-orbit radius to the
-    // target's auto-computed max radius (its own tighter framing distance),
-    // which would otherwise zoom the textured model in and break scale parity.
-    // The field of view is already fixed and equal on both viewers (see
-    // createGenerationViewer), so matching radius + target = identical scale.
-    target.setAttribute("min-camera-orbit", `auto auto ${orbit.radius}m`);
-    target.setAttribute("max-camera-orbit", `auto auto ${orbit.radius}m`);
-    target.setAttribute("camera-orbit", `${orbit.theta}rad ${orbit.phi}rad ${orbit.radius}m`);
-  } else {
-    // Keep the target's own framing (auto radius/target); align rotation only.
-    target.setAttribute("camera-orbit", `${orbit.theta}rad ${orbit.phi}rad auto`);
+  if (typeof source.getCameraTarget === "function") {
+    const center = source.getCameraTarget();
+    target.setAttribute("camera-target", `${center.x}m ${center.y}m ${center.z}m`);
   }
+  target.setAttribute("camera-orbit", `${orbit.theta}rad ${orbit.phi}rad ${orbit.radius}m`);
   // Match the auto-rotate turntable angle (radians). resetTurntableRotation sets
   // the scene yaw; auto-rotate then keeps accumulating from there.
   const yaw = source.turntableRotation;
@@ -143,6 +134,29 @@ function createResultCard(item) {
   let texturedViewer = null;
   let showingTextured = false;
   let partsReady = false;
+  // The parts model's framing distance, captured once. It is the shared zoom-out
+  // limit for both viewers and the reference the radius copy must not be clamped
+  // below, so the two models stay the same size at every zoom level.
+  let sharedRadius = null;
+
+  const captureSharedRadius = () => {
+    if (sharedRadius) return sharedRadius;
+    const orbit =
+      typeof partsViewer.getCameraOrbit === "function" ? partsViewer.getCameraOrbit() : null;
+    if (orbit && Number.isFinite(orbit.radius) && orbit.radius > 0) sharedRadius = orbit.radius;
+    return sharedRadius;
+  };
+
+  // Give a viewer the shared zoom band [0.25·R, R]. This (a) lets the textured
+  // viewer accept the parts viewer's (larger) framing radius instead of clamping
+  // it to its own tighter auto distance, and (b) makes both viewers zoom within
+  // the identical range so their sizes stay locked together as the user zooms.
+  const applyRadiusBounds = (viewer) => {
+    const r = captureSharedRadius();
+    if (!viewer || !r) return;
+    viewer.setAttribute("min-camera-orbit", `auto auto ${(r * 0.25).toFixed(5)}m`);
+    viewer.setAttribute("max-camera-orbit", `auto auto ${r.toFixed(5)}m`);
+  };
 
   const input = document.createElement("div");
   input.className = "generation-input";
@@ -191,6 +205,9 @@ function createResultCard(item) {
       { eager: true },
     );
     setViewerVisible(texturedViewer, false);
+    // Allow the textured viewer to reach the parts viewer's framing radius and
+    // zoom within the same band, so the radius copy below is never clamped.
+    applyRadiusBounds(texturedViewer);
     card.insertBefore(texturedViewer, input);
     return texturedViewer;
   };
@@ -199,12 +216,10 @@ function createResultCard(item) {
     showingTextured = false;
     setViewerVisible(texturedViewer, false);
     setViewerVisible(partsViewer, true);
-    // Realign the parts viewer's rotation to whatever the textured view shows,
-    // once parts has painted this frame.
+    // Adopt the textured view's current camera (incl. any zoom/pan the user did)
+    // so the size stays consistent, once parts has painted this frame.
     if (texturedViewer) {
-      requestAnimationFrame(() =>
-        syncViewerCamera(texturedViewer, partsViewer, { copyFraming: false }),
-      );
+      requestAnimationFrame(() => syncViewerCamera(texturedViewer, partsViewer));
     }
     button.disabled = false;
     setButtonLabel(false);
@@ -214,12 +229,14 @@ function createResultCard(item) {
     showingTextured = true;
     setViewerVisible(partsViewer, false);
     setViewerVisible(texturedViewer, true);
-    // Adopt the parts viewer's framing + current rotation so the textured model
-    // renders at the same scale and orientation. Deferred to the next frame so
-    // the textured viewer's camera controller exists and the attributes stick.
-    requestAnimationFrame(() =>
-      syncViewerCamera(partsViewer, texturedViewer, { copyFraming: true }),
-    );
+    // Adopt the parts viewer's full camera (framing + current zoom + rotation) so
+    // the textured model renders at the same scale and orientation. Deferred to
+    // the next frame so the textured viewer's camera controller exists and the
+    // attributes stick.
+    requestAnimationFrame(() => {
+      applyRadiusBounds(texturedViewer);
+      syncViewerCamera(partsViewer, texturedViewer);
+    });
     button.disabled = false;
     setButtonLabel(true);
   };
@@ -260,6 +277,14 @@ function createResultCard(item) {
   partsViewer.addEventListener("load", () => {
     partsReady = true;
     button.disabled = false;
+    // Capture the auto-framing radius (after it settles) and pin the shared zoom
+    // band on the parts viewer, so it zooms within the same range as textured.
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        captureSharedRadius();
+        applyRadiusBounds(partsViewer);
+      }),
+    );
   });
 
   partsViewer.addEventListener("error", () => {
