@@ -14,103 +14,98 @@ function resultAsset(id, title, options = {}) {
 
 // Add, remove, or reorder result objects here; both the homepage and /gallery/ read this list.
 export const generationItems = [
-  resultAsset("assets-802c1ccad00e90567182698145546d2f", "Image-Conditioned Result 01", {
-    inputAlt: "Stainless steel pedal bin conditioning input",
-  }),
-  resultAsset("assets-54ca4892caaa2413d290c99dca417006", "Image-Conditioned Result 02", {
-    inputAlt: "Rectangular pedal bin conditioning input",
-  }),
-  resultAsset("articulated-models-2-007", "Image-Conditioned Result 03"),
-  resultAsset("articulated-models-5-019", "Image-Conditioned Result 04"),
-  resultAsset("articulated-models-5-011", "Image-Conditioned Result 05"),
-  resultAsset("articulated-models-5-005", "Image-Conditioned Result 06"),
-  resultAsset("articulated-models-5-002", "Image-Conditioned Result 07"),
-  resultAsset("articulated-models-3-000", "Image-Conditioned Result 08"),
-  resultAsset("articulated-models-5-010", "Image-Conditioned Result 09"),
-  resultAsset("articulated-models-5-004", "Image-Conditioned Result 10"),
-  resultAsset("articulated-model-046", "Image-Conditioned Result 11"),
-  resultAsset("2c0c6134800d926367827b58ce8a3ecf", "Image-Conditioned Result 12", {
+  resultAsset("articulated-models-2-007", "Image-Conditioned Result 01"),
+  resultAsset("articulated-models-3-000", "Image-Conditioned Result 02"),
+  resultAsset("articulated-models-5-010", "Image-Conditioned Result 03"),
+  resultAsset("articulated-model-046", "Image-Conditioned Result 04"),
+  resultAsset("2c0c6134800d926367827b58ce8a3ecf", "Image-Conditioned Result 05", {
     inputAlt: "Stand mixer conditioning input",
   }),
-  resultAsset("4857147c301f001520ddcfb11189fc8f", "Image-Conditioned Result 13", {
-    inputAlt: "Bicycle conditioning input",
+  resultAsset("cfa75307489fe67b4ee40f38839e40dd", "Image-Conditioned Result 06", {
+    inputAlt: "Blender conditioning input",
   }),
-  resultAsset("4e11c085443c93b3efb7f4df6218ab05", "Image-Conditioned Result 14", {
+  resultAsset("8006c06cdf7bc0c44990f021a7fc9450", "Image-Conditioned Result 07", {
+    inputAlt: "Electric cooktop conditioning input",
+  }),
+  resultAsset("toaster1-auto", "Image-Conditioned Result 08", {
+    inputAlt: "Toaster conditioning input",
+  }),
+  resultAsset("calculator-manualallkey", "Image-Conditioned Result 09", {
+    inputAlt: "Calculator conditioning input",
+  }),
+  resultAsset("4e11c085443c93b3efb7f4df6218ab05", "Image-Conditioned Result 10", {
     inputAlt: "Drone conditioning input",
   }),
-  resultAsset("hy-eval-024", "Image-Conditioned Result 15", {
-    inputAlt: "Faucet conditioning input",
+  resultAsset("scrooter2-auto", "Image-Conditioned Result 11", {
+    inputAlt: "Kick scooter conditioning input",
   }),
-  resultAsset("hy-eval-008", "Image-Conditioned Result 16", {
-    inputAlt: "Soap dispenser conditioning input",
+  resultAsset("bicycle-auto", "Image-Conditioned Result 12", {
+    inputAlt: "Bicycle conditioning input",
   }),
-  resultAsset("hy-eval-041", "Image-Conditioned Result 17", {
-    inputAlt: "Table conditioning input",
+  resultAsset("articulated-models-3-004", "Image-Conditioned Result 13"),
+  resultAsset("hy-eval-022", "Image-Conditioned Result 14", {
+    inputAlt: "Sunglasses conditioning input",
   }),
-  resultAsset("hy-eval-017", "Image-Conditioned Result 18", {
-    inputAlt: "Stapler conditioning input",
-  }),
-  resultAsset("hy-eval-000", "Image-Conditioned Result 19", {
-    inputAlt: "Bucket conditioning input",
-  }),
-  resultAsset("hy-eval-029", "Image-Conditioned Result 20", {
+  resultAsset("hy-eval-029", "Image-Conditioned Result 15", {
     inputAlt: "Laptop conditioning input",
   }),
-  resultAsset("hy-eval-013", "Image-Conditioned Result 21", {
-    inputAlt: "Suitcase conditioning input",
+  resultAsset("articulated-models-2-004", "Image-Conditioned Result 16"),
+  resultAsset("hy-eval-000", "Image-Conditioned Result 17", {
+    inputAlt: "Bucket conditioning input",
   }),
-  resultAsset("hy-eval-050", "Image-Conditioned Result 22", {
-    inputAlt: "Stapler conditioning input",
+  resultAsset("assets-802c1ccad00e90567182698145546d2f", "Image-Conditioned Result 18", {
+    inputAlt: "Stainless steel pedal bin conditioning input",
   }),
-  resultAsset("hy-eval-021", "Image-Conditioned Result 23", {
-    inputAlt: "Toilet conditioning input",
+  resultAsset("articulated-models-5-004", "Image-Conditioned Result 19"),
+  resultAsset("articulated-models-5-002", "Image-Conditioned Result 20"),
+  resultAsset("articulated-models-5-005", "Image-Conditioned Result 21"),
+  resultAsset("assets-54ca4892caaa2413d290c99dca417006", "Image-Conditioned Result 22", {
+    inputAlt: "Rectangular pedal bin conditioning input",
   }),
-  resultAsset("hy-eval-005", "Image-Conditioned Result 24", {
-    inputAlt: "Globe conditioning input",
+  resultAsset("hy-eval-024", "Image-Conditioned Result 23", {
+    inputAlt: "Faucet conditioning input",
   }),
-  resultAsset("hy-eval-039", "Image-Conditioned Result 25", {
-    inputAlt: "Desk conditioning input",
-  }),
-  resultAsset("hy-eval-012", "Image-Conditioned Result 26", {
+  resultAsset("hy-eval-012", "Image-Conditioned Result 24", {
     inputAlt: "Soap dispenser conditioning input",
   }),
-  resultAsset("hy-eval-026", "Image-Conditioned Result 27", {
-    inputAlt: "Stapler conditioning input",
+  resultAsset("hy-eval-008", "Image-Conditioned Result 25", {
+    inputAlt: "Soap dispenser conditioning input",
+  }),
+  resultAsset("articulated-models-5-021", "Image-Conditioned Result 26"),
+  resultAsset("hy-eval-013", "Image-Conditioned Result 27", {
+    inputAlt: "Suitcase conditioning input",
   }),
   resultAsset("hy-eval-015", "Image-Conditioned Result 28", {
     inputAlt: "Faucet conditioning input",
   }),
-  resultAsset("hy-eval-022", "Image-Conditioned Result 29", {
-    inputAlt: "Sunglasses conditioning input",
+  resultAsset("hy-eval-026", "Image-Conditioned Result 29", {
+    inputAlt: "Stapler conditioning input",
   }),
-  resultAsset("articulated-models-2-004", "Image-Conditioned Result 30"),
-  resultAsset("articulated-models-3-004", "Image-Conditioned Result 31"),
-  resultAsset("articulated-models-5-015", "Image-Conditioned Result 32"),
-  resultAsset("articulated-models-5-021", "Image-Conditioned Result 33"),
-  resultAsset("articulated-models-2-005", "Image-Conditioned Result 34"),
-  resultAsset("cfa75307489fe67b4ee40f38839e40dd", "Image-Conditioned Result 35", {
-    inputAlt: "Blender conditioning input",
+  resultAsset("hy-eval-039", "Image-Conditioned Result 30", {
+    inputAlt: "Desk conditioning input",
   }),
-  resultAsset("8006c06cdf7bc0c44990f021a7fc9450", "Image-Conditioned Result 36", {
-    inputAlt: "Electric cooktop conditioning input",
+  resultAsset("hy-eval-005", "Image-Conditioned Result 31", {
+    inputAlt: "Globe conditioning input",
+  }),
+  resultAsset("hy-eval-021", "Image-Conditioned Result 32", {
+    inputAlt: "Toilet conditioning input",
+  }),
+  resultAsset("articulated-models-2-005", "Image-Conditioned Result 33"),
+  resultAsset("hy-eval-050", "Image-Conditioned Result 34", {
+    inputAlt: "Stapler conditioning input",
+  }),
+  resultAsset("hy-eval-017", "Image-Conditioned Result 35", {
+    inputAlt: "Stapler conditioning input",
+  }),
+  resultAsset("hy-eval-041", "Image-Conditioned Result 36", {
+    inputAlt: "Table conditioning input",
   }),
   resultAsset("USB2-manual", "Image-Conditioned Result 37", {
     inputAlt: "USB flash drive conditioning input",
   }),
-  resultAsset("scrooter2-auto", "Image-Conditioned Result 38", {
-    inputAlt: "Kick scooter conditioning input",
-  }),
-  resultAsset("toaster1-auto", "Image-Conditioned Result 39", {
-    inputAlt: "Toaster conditioning input",
-  }),
-  resultAsset("bicycle-auto", "Image-Conditioned Result 40", {
+  resultAsset("articulated-models-5-011", "Image-Conditioned Result 38"),
+  resultAsset("4857147c301f001520ddcfb11189fc8f", "Image-Conditioned Result 39", {
     inputAlt: "Bicycle conditioning input",
-  }),
-  resultAsset("calculator-manualallkey", "Image-Conditioned Result 41", {
-    inputAlt: "Calculator conditioning input",
-  }),
-  resultAsset("lamp7-auto", "Image-Conditioned Result 42", {
-    inputAlt: "Desk lamp conditioning input",
   }),
 ];
 
