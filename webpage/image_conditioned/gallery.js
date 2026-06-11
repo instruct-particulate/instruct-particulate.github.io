@@ -94,6 +94,15 @@ export const generationItems = [
   resultAsset("8006c06cdf7bc0c44990f021a7fc9450", "Image-Conditioned Result 36", {
     inputAlt: "Electric cooktop conditioning input",
   }),
+  resultAsset("USB2-manual", "Image-Conditioned Result 37", {
+    inputAlt: "USB flash drive conditioning input",
+  }),
+  resultAsset("scrooter2-auto", "Image-Conditioned Result 38", {
+    inputAlt: "Kick scooter conditioning input",
+  }),
+  resultAsset("toaster1-auto", "Image-Conditioned Result 39", {
+    inputAlt: "Toaster conditioning input",
+  }),
 ];
 
 const textureIcon = `
