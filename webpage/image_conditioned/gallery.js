@@ -103,6 +103,15 @@ export const generationItems = [
   resultAsset("toaster1-auto", "Image-Conditioned Result 39", {
     inputAlt: "Toaster conditioning input",
   }),
+  resultAsset("bicycle-auto", "Image-Conditioned Result 40", {
+    inputAlt: "Bicycle conditioning input",
+  }),
+  resultAsset("calculator-manualallkey", "Image-Conditioned Result 41", {
+    inputAlt: "Calculator conditioning input",
+  }),
+  resultAsset("lamp7-auto", "Image-Conditioned Result 42", {
+    inputAlt: "Desk lamp conditioning input",
+  }),
 ];
 
 const textureIcon = `
